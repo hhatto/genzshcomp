@@ -27,8 +27,15 @@ show example dir...
 
 basic usage::
 
+    ## gen.py
     from genzshcomp import ZshCompletionGenerator
     generator = ZshCompletionGenerator(command_name,
                                        python_option_parser_object)
     print generator.get()
 
+and...
+
+    $ python gen.py > ~/.zsh/comp/_command
+    $ echo "fpath=(~/.zsh/comp/ $fpath)" >> ~/.zshrc
+    $ echo "autoload -U ~/.zsh/comp/*(:t)" >> ~/.zshrc
+    $ echo "autoload -Uz compinit >> ~/.zshrc
