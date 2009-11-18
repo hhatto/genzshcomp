@@ -4,7 +4,7 @@ Automatic generate to Zsh Completion Function from
 Python's Option Parser Modules.
 
 (Now pre-alpha release. It corresponds only to `argparse`_ module.
-Because I want to be created `grin` command's Zsh Completion Function.)
+Because I want to be created `grin`_ command's Zsh Completion Function.)
 
 .. _`argparse`: http://code.google.com/p/argparse/
 .. _`grin`: http://pypi.python.org/pypi/grin
