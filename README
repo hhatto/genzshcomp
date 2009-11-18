@@ -1,0 +1,34 @@
+About
+=====
+Automatic generate to Zsh Completion Function from
+Python's Option Parser Modules.
+
+(Now pre-alpha release. It corresponds only to `argparse`_ module.
+Because I want to be created `grin` command's Zsh Completion Function.)
+
+.. _`argparse`: http://code.google.com/p/argparse/
+.. _`grin`: http://pypi.python.org/pypi/grin
+
+Install
+=======
+used to easy_install::
+
+  $ easy_install genzshcomp
+
+
+Require
+=======
+* Python2.6+
+
+
+Usage
+=====
+show example dir...
+
+basic usage::
+
+    from genzshcomp import ZshCompletionGenerator
+    generator = ZshCompletionGenerator(command_name,
+                                       python_option_parser_object)
+    print generator.get()
+
