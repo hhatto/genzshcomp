@@ -21,8 +21,10 @@ setup(
         'Operating System :: Unix',
         'License :: OSI Approved :: BSD License',
         'Programming Language :: Python',
+        'Programming Language :: Unix Shell',
+        'Topic :: System :: Shells',
     ],
-    keywords="automation",
+    keywords="automation zsh completion",
     py_modules=['genzshcomp'],
     zip_safe=False,
 )
