@@ -16,5 +16,26 @@ class TestParserType(TestCase):
         ret = genzshcomp.get_parser_type(target)
         self.assertEqual(ret, "optparse")
 
+
+class TestEscape(TestCase):
+
+    def test_non_squarebracket(self):
+        self.assertEqual("hoge", genzshcomp._escape_squarebracket("hoge"))
+
+    def test_squarebracket_left(self):
+        self.assertEqual("\\[hoge", genzshcomp._escape_squarebracket("[hoge"))
+
+    def test_squarebracket_right(self):
+        self.assertEqual("hoge\\]", genzshcomp._escape_squarebracket("hoge]"))
+
+    def test_squarebracket_leftright(self):
+        self.assertEqual("\\[hoge\\]",
+                         genzshcomp._escape_squarebracket("[hoge]"))
+
+    def test_squarebracket_double(self):
+        self.assertEqual("hoge\\]\\]",
+                         genzshcomp._escape_squarebracket("hoge]]"))
+
+
 if __name__ == '__main__':
     main()

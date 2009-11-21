@@ -1,6 +1,6 @@
 """automatic generated to zsh completion function file"""
 
-__version__ = '0.0.2'
+__version__ = '0.1.0dev'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
 __license__ = 'NewBSDLicense'
 
