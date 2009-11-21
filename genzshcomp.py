@@ -7,26 +7,40 @@ __license__ = 'NewBSDLicense'
 
 def get_parser_type(parser_obj):
     """return to 'argparse' or 'optparse'"""
-    ret = parser_obj.__module__
-    return ret
+    return parser_obj.__module__
+
+
+def _escape_squarebracket(strings):
+    """escape to only squarebracket.
+
+    >>> print _escape_squarebracket("hoge")
+    hoge
+    >>> print _escape_squarebracket("[hoge")
+    \[hoge
+    >>> print _escape_squarebracket("hoge]")
+    hoge\]
+    >>> print _escape_squarebracket("[hoge]")
+    \[hoge\]
+    """
+    ret = []
+    for string in strings:
+        if string == '[' or string == ']':
+            string = '\\' + string
+        ret.append(string)
+    return "".join(ret)
 
 
 class ZshCompletionGenerator(object):
+
+    """Generator of Zsh Completion Function"""
 
     def __init__(self, commandname=None, parser=None):
         self.commandname = commandname
         self.parser = parser
         self.parser_type = get_parser_type(parser)
 
-    def _escape_squarebracket(self, strings):
-        ret = []
-        for s in strings:
-            if s == '[' or s == ']':
-                s = '\\' + s
-            ret.append(s)
-        return "".join(ret)
-
     def get(self):
+        """return to string of zsh completion function."""
         if self.parser_type == 'optparse':
             actions = self.parser.option_list
         elif self.parser_type == 'argparse':
@@ -51,7 +65,7 @@ class ZshCompletionGenerator(object):
                 opts = action.option_strings
             for opt in opts:
                 tmp = "  \"%s[%s]:%s:_files %s\" \\" % (opt,
-                      self._escape_squarebracket(action.help),
+                      _escape_squarebracket(action.help),
                       metavar, directory_comp)
                 ret.append(tmp)
         ret.append("  \":files:->files\" \\")
