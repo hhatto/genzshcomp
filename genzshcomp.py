@@ -1,6 +1,6 @@
 """automatic generated to zsh completion function file"""
 
-__version__ = '0.1.0dev'
+__version__ = '0.0.3'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
 __license__ = 'NewBSDLicense'
 
@@ -39,6 +39,23 @@ class ZshCompletionGenerator(object):
         self.parser = parser
         self.parser_type = get_parser_type(parser)
 
+    def _get_dircomp(self, opt):
+        """judged to directories and files completion, and
+        return to ':->dirfile' or ''
+        """
+        directory_comp = ":->dirfile"
+        ## version
+        if self.parser_type == 'optparse':
+            if '--version' == opt:
+                directory_comp = ""
+        else:   # argparse
+            if '-v' == opt or '--version' == opt:
+                directory_comp = ""
+        ## help
+        if '-h' == opt or '--help' == opt:
+            directory_comp = ""
+        return directory_comp
+
     def get(self):
         """return to string of zsh completion function."""
         if self.parser_type == 'optparse':
@@ -51,11 +68,8 @@ class ZshCompletionGenerator(object):
         ret.append("local context state line\n")
         ret.append("_arguments -s -S \\")
         for action in actions:
-            directory_comp = "-/"   ## default setting
             if action.metavar:
-                metavar = action.metavar
-                #if "dir" in metavar.lower():
-                #    directory_comp = "-/"
+                metavar = ":%s:" % action.metavar
             else:
                 metavar = ""
             if self.parser_type == 'optparse':
@@ -64,13 +78,14 @@ class ZshCompletionGenerator(object):
             elif self.parser_type == 'argparse':
                 opts = action.option_strings
             for opt in opts:
-                tmp = "  \"%s[%s]:%s:_files %s\" \\" % (opt,
+                directory_comp = self._get_dircomp(opt)
+                tmp = "  \"%s[%s]%s:%s\" \\" % (opt,
                       _escape_squarebracket(action.help),
                       metavar, directory_comp)
                 ret.append(tmp)
-        ret.append("  \":files:->files\" \\")
+        ret.append("  \"::dirfile:_files\" \\")
         state = "case $state in\n"\
-                "(files)\n"\
+                "(dirfile)\n"\
                 "  _files -/ && return 0\n  ;;\nesac\n"
         ret.append("  && return 0")
         ret.append(state)
