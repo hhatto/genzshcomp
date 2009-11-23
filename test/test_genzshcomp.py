@@ -32,9 +32,17 @@ class TestEscape(TestCase):
         self.assertEqual("\\[hoge\\]",
                          genzshcomp._escape_squarebracket("[hoge]"))
 
-    def test_squarebracket_double(self):
+    def test_squarebracket_rightdouble(self):
         self.assertEqual("hoge\\]\\]",
                          genzshcomp._escape_squarebracket("hoge]]"))
+
+    def test_squarebracket_leftdouble(self):
+        self.assertEqual("\\[\\[hoge",
+                         genzshcomp._escape_squarebracket("[[hoge"))
+
+    def test_squarebracket_leftrightdouble(self):
+        self.assertEqual("\\[\\[hoge\\]\\]",
+                         genzshcomp._escape_squarebracket("[[hoge]]"))
 
 
 if __name__ == '__main__':
