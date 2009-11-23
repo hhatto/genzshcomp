@@ -42,7 +42,7 @@ basic usage::
     generator = ZshCompletionGenerator(command_name, parser)
     print generator.get()
 
-and...
+and zsh completion setups::
 
     $ python gen.py > ~/.zsh/comp/_command
     $ echo "fpath=(~/.zsh/comp/ $fpath)" >> ~/.zshrc
