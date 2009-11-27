@@ -1,13 +1,24 @@
 """automatic generated to zsh completion function file"""
 
-__version__ = '0.0.4'
+__version__ = '0.0.5dev'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
 __license__ = 'NewBSDLicense'
 
 
+class InvalidParserTypeError(Exception):
+    """Base Class for invalid parser type exception."""
+
+
 def get_parser_type(parser_obj):
     """return to 'argparse' or 'optparse'"""
-    return parser_obj.__module__
+    if not hasattr(parser_obj, '__module__'):
+        raise InvalidParserTypeError("not have attribute to '__module__'." \
+                                     " object-type='%s'" % type(parser_obj))
+    parser_type = parser_obj.__module__
+    if not parser_type in ('optparse', 'argparse'):
+        raise InvalidParserTypeError("Invalid paresr type." \
+                                     " type='%s'" % type(parser_type))
+    return parser_type
 
 
 def _escape_squarebracket(strings):

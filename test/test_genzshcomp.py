@@ -16,6 +16,16 @@ class TestParserType(TestCase):
         ret = genzshcomp.get_parser_type(target)
         self.assertEqual(ret, "optparse")
 
+    def test_dummyobj(self):
+        target = object()
+        self.assertRaises(genzshcomp.InvalidParserTypeError,
+                          genzshcomp.get_parser_type, target)
+
+    def test_different_type(self):
+        target = self
+        self.assertRaises(genzshcomp.InvalidParserTypeError,
+                          genzshcomp.get_parser_type, target)
+
 
 class TestEscape(TestCase):
 
