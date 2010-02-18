@@ -1,6 +1,9 @@
 from unittest import TestCase, main
 from argparse import ArgumentParser
 from optparse import OptionParser
+import sys
+import os
+sys.path.insert(0, os.path.abspath('./'))
 import genzshcomp
 
 
@@ -60,52 +63,52 @@ class TestReturnDirCompString(TestCase):
     def test_argparse_help_short(self):
         parser = ArgumentParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
-        self.assertEqual('', generator._get_dircomp('-h'))
+        self.assertEqual(':', generator._get_dircomp('-h'))
 
     def test_argparse_help_long(self):
         parser = ArgumentParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
-        self.assertEqual('', generator._get_dircomp('--help'))
+        self.assertEqual(':', generator._get_dircomp('--help'))
 
     def test_argparse_version_short(self):
         parser = ArgumentParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
-        self.assertEqual('', generator._get_dircomp('-v'))
+        self.assertEqual(':', generator._get_dircomp('-v'))
 
     def test_argparse_version_long(self):
         parser = ArgumentParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
-        self.assertEqual('', generator._get_dircomp('--version'))
+        self.assertEqual(':', generator._get_dircomp('--version'))
 
     def test_argparse_dirfiles(self):
         parser = ArgumentParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
-        self.assertEqual(':->dirfile', generator._get_dircomp('-c'))
+        self.assertEqual('', generator._get_dircomp('-c'))
 
     def test_optparse_help_short(self):
         parser = OptionParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
-        self.assertEqual('', generator._get_dircomp('-h'))
+        self.assertEqual(':', generator._get_dircomp('-h'))
 
     def test_optparse_help_long(self):
         parser = OptionParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
-        self.assertEqual('', generator._get_dircomp('--help'))
+        self.assertEqual(':', generator._get_dircomp('--help'))
 
     def test_optparse_version_short(self):
         parser = OptionParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
-        self.assertEqual(':->dirfile', generator._get_dircomp('-v'))
+        self.assertEqual('', generator._get_dircomp('-v'))
 
     def test_optparse_version_long(self):
         parser = OptionParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
-        self.assertNotEqual(':->dirfile', generator._get_dircomp('--version'))
+        self.assertNotEqual('::->dirfile', generator._get_dircomp('--version'))
 
     def test_optparse_dirfiles(self):
         parser = OptionParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
-        self.assertEqual(':->dirfile', generator._get_dircomp('-c'))
+        self.assertEqual('', generator._get_dircomp('-c'))
 
 
 if __name__ == '__main__':

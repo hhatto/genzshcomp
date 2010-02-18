@@ -52,19 +52,29 @@ class ZshCompletionGenerator(object):
 
     def _get_dircomp(self, opt):
         """judged to directories and files completion, and
-        return to ':->dirfile' or ''
+        return to '::->dirfile' or ':' or ''
         """
-        directory_comp = ":->dirfile"
+        directory_comp = "::->dirfile"
+        directory_comp = ""
         ## version
         if self.parser_type == 'optparse':
             if '--version' == opt:
-                directory_comp = ""
+                return ":"
         else:   # argparse
             if '-v' == opt or '--version' == opt:
-                directory_comp = ""
+                return ":"
         ## help
         if '-h' == opt or '--help' == opt:
-            directory_comp = ""
+            return ":"
+        ## user define options
+        if self.parser_type == 'optparse':  # TODO: now, only optparse module
+            opt_obj = self.parser._short_opt.get(opt)
+            if opt_obj and opt_obj.action in ('store_true', 'store_false'):
+                return ""
+            else:
+                opt_obj = self.parser._long_opt.get(opt)
+                if opt_obj and opt_obj.action in ('store_true', 'store_false'):
+                    return ""
         return directory_comp
 
     def get(self):
@@ -90,14 +100,9 @@ class ZshCompletionGenerator(object):
                 opts = action.option_strings
             for opt in opts:
                 directory_comp = self._get_dircomp(opt)
-                tmp = "  \"%s[%s]%s:%s\" \\" % (opt,
+                tmp = "  \"%s[%s]%s%s\" \\" % (opt,
                       _escape_squarebracket(action.help),
                       metavar, directory_comp)
                 ret.append(tmp)
-        ret.append("  \"::dirfile:_files\" \\")
-        state = "case $state in\n"\
-                "(dirfile)\n"\
-                "  _files -/ && return 0\n  ;;\nesac\n"
-        ret.append("  && return 0")
-        ret.append(state)
+        ret.append("  \"*::args:_arguments\"")
         return "\n".join(ret)
