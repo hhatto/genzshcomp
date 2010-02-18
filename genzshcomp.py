@@ -106,3 +106,23 @@ class ZshCompletionGenerator(object):
                 ret.append(tmp)
         ret.append("  \"*::args:_arguments\"")
         return "\n".join(ret)
+
+
+class HelpParser(object):
+
+    def __init__(self, lines):
+        self.lines = lines
+
+    def parse(self):
+        pass
+
+
+def main():
+    parser = HelpParser(open(sys.argv[1]).readlines())
+    parse.parse()
+    return 0
+
+
+if __name__ == '__main__':
+    import sys
+    sys.exit(main())
