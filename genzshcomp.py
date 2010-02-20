@@ -1,6 +1,7 @@
 """automatic generated to zsh completion function file"""
 from optparse import OptionParser
 import re
+import sys
 
 __version__ = '0.0.5dev'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
@@ -205,5 +206,4 @@ def main():
 
 
 if __name__ == '__main__':
-    import sys
     sys.exit(main())

@@ -27,4 +27,5 @@ setup(
     keywords="automation zsh completion",
     py_modules=['genzshcomp'],
     zip_safe=False,
+    entry_points={'console_scripts': ['genzshcomp = genzshcomp:main']},
 )
