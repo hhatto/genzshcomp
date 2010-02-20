@@ -114,34 +114,40 @@ class ZshCompletionGenerator(object):
 
 class HelpParser(object):
 
+    """converte from help-strins to optparse.OptionParser"""
+
     def __init__(self, helpstrings):
-        self.lines = helpstrings.splitlines()
-        pass
+        self.helplines = helpstrings.splitlines()
+        for cnt, line in enumerate(self.helplines):
+            if re.match("Options:", line):
+                self.parselines = self.helplines[cnt:]
+                break
 
     def get_commandname(self):
         """get command name from help strings."""
-        for line in self.lines:
+        for line in self.helplines:
             if "Usage:" in line:
                 tmp = line.split()
                 return tmp[1]
         return None
 
-    def _get_helpoffset(self, line):
-        return re.search("show program's", line).start()
+    def _get_helpoffset(self):
+        """get offset-position of help-strings.
+
+        :param line: line
+        :param line: str
+        :return: offset position
+        :rtype: int"""
+        return re.search("show program's", self.parselines[1]).start()
 
     def help2optparse(self):
         """convert from help strings to optparse.OptionParser object."""
+        helpstring_offset = self._get_helpoffset()
         parser = OptionParser()
-        helpstring_offset = 0
-        for cnt, line in enumerate(self.lines):
-            if re.match("Options:", line):
-                ## 3 == ('Options' line + version + help)
-                helpstring_offset = self._get_helpoffset(self.lines[cnt + 1])
-                parselines = self.lines[cnt + 3:]
-                break
         option_cnt = -1
         option_list = []
-        for line in parselines:
+        ## 3 == ('Options' line + version + help)
+        for line in self.parselines[3:]:
             tmp = line.split()
             if tmp[0][:2] == '--':
                 ## only long option
@@ -156,19 +162,17 @@ class HelpParser(object):
                                     'metavar': metavar,
                                     'help': line[helpstring_offset:]})
                 option_cnt += 1
-                pass
             elif tmp[0][0] == '-':
                 ## short option
                 shortopt = tmp[0][:2]
                 metavar = None
+                longopt = None
                 if tmp[1][:2] == '--':
                     longopt = tmp[1]
                     if '=' in longopt:
                         longtmp = longopt.split("=")
                         longopt = longtmp[0]
                         metavar = longtmp[1]
-                else:
-                    longopt = None
                 option_list.append({'short': shortopt,
                                     'long': longopt,
                                     'metavar': None,
@@ -191,6 +195,7 @@ class HelpParser(object):
 
 
 def main():
+    """tool main"""
     help_parser = HelpParser(open(sys.argv[1]).read())
     command_name = help_parser.get_commandname()
     option_parser = help_parser.help2optparse()
