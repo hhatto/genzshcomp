@@ -108,7 +108,7 @@ class ZshCompletionGenerator(object):
                       _escape_squarebracket(action.help),
                       metavar, directory_comp)
                 ret.append(tmp)
-        ret.append("  \"*::args:_arguments\"")
+        ret.append("  \"*::args:_files\"")
         return "\n".join(ret)
 
 
