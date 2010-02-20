@@ -1,4 +1,6 @@
 """automatic generated to zsh completion function file"""
+from optparse import OptionParser
+import re
 
 __version__ = '0.0.5dev'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
@@ -110,16 +112,81 @@ class ZshCompletionGenerator(object):
 
 class HelpParser(object):
 
-    def __init__(self, lines):
-        self.lines = lines
-
-    def parse(self):
+    def __init__(self, helpstrings):
+        self.lines = helpstrings.splitlines()
         pass
+
+    def get_commandname(self):
+        """get command name from help strings."""
+        for line in self.lines:
+            if "Usage:" in line:
+                tmp = line.split()
+                return tmp[1]
+        return None
+
+    def _get_helpoffset(self, line):
+        return re.search("show program's", line).start()
+
+    def help2optparse(self):
+        """convert from help strings to optparse.OptionParser object."""
+        parser = OptionParser()
+        helpstring_offset = 0
+        for cnt, line in enumerate(self.lines):
+            if re.match("Options:", line):
+                ## 3 == ('Options' line + version + help)
+                helpstring_offset = self._get_helpoffset(self.lines[cnt + 1])
+                parselines = self.lines[cnt + 3:]
+                break
+        option_cnt = -1
+        option_list = []
+        for line in parselines:
+            tmp = line.split()
+            if tmp[0][:2] == '--':
+                ## only long option
+                longopt = tmp[0]
+                if '=' in longopt:
+                    metavar = longopt.split('=')[1]
+                else:
+                    metavar = None
+                option_list.append({'short': None,
+                                    'long': longopt,
+                                    'metavar': metavar,
+                                    'help': line[helpstring_offset:]})
+                option_cnt += 1
+                pass
+            elif tmp[0][0] == '-':
+                ## short option
+                shortopt = tmp[0][:2]
+                if tmp[1][:2] == '--':
+                    longopt = tmp[1]
+                else:
+                    longopt = None
+                option_list.append({'short': shortopt,
+                                    'long': longopt,
+                                    'metavar': None,
+                                    'help': line[helpstring_offset:]})
+                option_cnt += 1
+            else:
+                ## only help-strings line
+                option_list[option_cnt]['help'] += " " + line[helpstring_offset:]
+        for opt in option_list:
+            if opt['short']:
+                parser.add_option(opt['short'], opt['long'],
+                                  metavar=opt['metavar'],
+                                  help=opt['help'])
+            else:
+                parser.add_option(opt['long'],
+                                  metavar=opt['metavar'],
+                                  help=opt['help'])
+        return parser
 
 
 def main():
-    parser = HelpParser(open(sys.argv[1]).readlines())
-    parse.parse()
+    help_parser = HelpParser(open(sys.argv[1]).read())
+    command_name = help_parser.get_commandname()
+    option_parser = help_parser.help2optparse()
+    zshop = ZshCompletionGenerator(command_name, option_parser)
+    print zshop.get()
     return 0
 
 
