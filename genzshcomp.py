@@ -54,11 +54,11 @@ class ZshCompletionGenerator(object):
         self.parser_type = get_parser_type(parser)
 
     def _get_dircomp(self, opt):
-        """judged to directories and files completion, and
-        return to '::->dirfile' or ':' or ''
+        """judged to directories and files completion.
+
+        :return: ':' or ''
+        :rtype: str
         """
-        directory_comp = "::->dirfile"
-        directory_comp = ""
         ## version
         if self.parser_type == 'optparse':
             if '--version' == opt:
@@ -78,7 +78,7 @@ class ZshCompletionGenerator(object):
                 opt_obj = self.parser._long_opt.get(opt)
                 if opt_obj and opt_obj.action in ('store_true', 'store_false'):
                     return ""
-        return directory_comp
+        return ""
 
     def get(self):
         """return to string of zsh completion function."""
@@ -138,7 +138,8 @@ class HelpParser(object):
         :param line: line
         :param line: str
         :return: offset position
-        :rtype: int"""
+        :rtype: int
+        """
         return re.search("show program's", self.parselines[1]).start()
 
     def help2optparse(self):
@@ -149,10 +150,10 @@ class HelpParser(object):
         ## 3 == ('Options' line + version + help)
         for line in self.parselines[3:]:
             tmp = line.split()
+            metavar = None
             if tmp[0][:2] == '--':
                 ## only long option
                 longopt = tmp[0]
-                metavar = None
                 if '=' in longopt:
                     longtmp = longopt.split("=")
                     longopt = longtmp[0]
@@ -165,7 +166,6 @@ class HelpParser(object):
             elif tmp[0][0] == '-':
                 ## short option
                 shortopt = tmp[0][:2]
-                metavar = None
                 longopt = None
                 if tmp[1][:2] == '--':
                     longopt = tmp[1]
