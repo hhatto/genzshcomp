@@ -3,7 +3,7 @@ from optparse import OptionParser
 import re
 import sys
 
-__version__ = '0.0.6'
+__version__ = '0.0.7dev'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
 __license__ = 'NewBSDLicense'
 
@@ -140,15 +140,17 @@ class HelpParser(object):
         :return: offset position
         :rtype: int
         """
-        return re.search("show program's", self.parselines[1]).start()
+        return re.search("show ", self.parselines[1]).start()
 
     def help2optparse(self):
         """convert from help strings to optparse.OptionParser object."""
         helpstring_offset = self._get_helpoffset()
         option_cnt = -1
         option_list = []
-        ## 3 == ('Options' line + version + help)
-        for line in self.parselines[3:]:
+        ## 1 == 'Options' line
+        for line in self.parselines[1:]:
+            if '--help' in line:
+                continue
             tmp = line.split()
             metavar = None
             if tmp[0][:2] == '--':
