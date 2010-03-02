@@ -3,7 +3,10 @@ from optparse import OptionParser
 import re
 import sys
 
-__version__ = '0.0.7'
+from argparse import ArgumentParser, RawDescriptionHelpFormatter
+
+
+__version__ = '0.0.8dev'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
 __license__ = 'NewBSDLicense'
 
@@ -122,12 +125,21 @@ class HelpParser(object):
         for cnt, line in enumerate(self.helplines):
             if re.match("Options:", line):
                 self.parselines = self.helplines[cnt:]
-                break
+                self.parser_type = 'optparse'
+                return
+            elif re.match("optional arguments:", line):
+                self.parselines = self.helplines[cnt:]
+                self.parser_type = 'argparse'
+                return
+        raise InvalidParserTypeError("Invalid paresr type.")
 
     def get_commandname(self):
         """get command name from help strings."""
         for line in self.helplines:
-            if "Usage:" in line:
+            if "Usage:" in line and self.parser_type is 'optparse':
+                tmp = line.split()
+                return tmp[1]
+            if "usage:" in line and self.parser_type is 'argparse':
                 tmp = line.split()
                 return tmp[1]
         return None
@@ -142,6 +154,48 @@ class HelpParser(object):
         """
         return re.search("show ", self.parselines[1]).start()
 
+    def _get_parserobj(self, option_list):
+        """judged to parser type, return tp parser object
+
+        :param option_list: parser option list
+        :return: parser object, optparse.OptionParser or
+                 argparse.ArgumentParser
+        :rtype: parser object class
+        """
+        if '--version' in self.parselines[0]:
+            if 'optparse' == self.parser_type:
+                parser = OptionParser(version="dummy")
+            else:
+                parser = ArgumentParser(
+                            version='dummy',
+                            formatter_class=RawDescriptionHelpFormatter)
+        else:
+            if 'optparse' == self.parser_type:
+                parser = OptionParser()
+            else:
+                parser = ArgumentParser(
+                            formatter_class=RawDescriptionHelpFormatter)
+        for opt in option_list:
+            if opt['short'] and self.parser_type is 'optparse':
+                parser.add_option(opt['short'], opt['long'],
+                                  metavar=opt['metavar'],
+                                  help=opt['help'].strip())
+            elif not opt['short'] and self.parser_type is 'optparse':
+                parser.add_option(opt['long'],
+                                  metavar=opt['metavar'],
+                                  help=opt['help'].strip())
+            elif opt['short'] and self.parser_type is 'argparse':
+                parser.add_argument(opt['short'], opt['long'],
+                                    metavar=opt['metavar'],
+                                    help=opt['help'].strip())
+            elif not opt['short'] and self.parser_type is 'argparse':
+                parser.add_argument(opt['long'],
+                                    metavar=opt['metavar'],
+                                    help=opt['help'].strip())
+            else:
+                raise InvalidParserTypeError("Invalid paresr type.")
+        return parser
+
     def help2optparse(self):
         """convert from help strings to optparse.OptionParser object."""
         helpstring_offset = self._get_helpoffset()
@@ -149,6 +203,8 @@ class HelpParser(object):
         option_list = []
         ## 1 is 'Options' line
         for line in self.parselines[1:]:
+            if len(line) < helpstring_offset:
+                break
             if '--help' in line:
                 continue
             tmp = line.split()
@@ -191,20 +247,7 @@ class HelpParser(object):
                 ## only help-strings line
                 option_list[option_cnt]['help'] += line[helpstring_offset:]
                 option_list[option_cnt]['help'] += " "
-        if '--version' in self.parselines[0]:
-            parser = OptionParser(version="dummy")
-        else:
-            parser = OptionParser()
-        for opt in option_list:
-            if opt['short']:
-                parser.add_option(opt['short'], opt['long'],
-                                  metavar=opt['metavar'],
-                                  help=opt['help'].strip())
-            else:
-                parser.add_option(opt['long'],
-                                  metavar=opt['metavar'],
-                                  help=opt['help'].strip())
-        return parser
+        return self._get_parserobj(option_list)
 
 
 def main():

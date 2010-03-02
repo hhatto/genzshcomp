@@ -111,5 +111,84 @@ class TestReturnDirCompString(TestCase):
         self.assertEqual('', generator._get_dircomp('-c'))
 
 
+class TestHelpParser(TestCase):
+
+    def test_invalid_parser_type(self):
+        hp = genzshcomp.HelpParser("optional arguments:")
+        hp.parser_type = 'dummy'
+        optlist = [{'short': None, 'long': '--text',
+                    'metavar': None, 'help': "help string"}]
+        self.assertRaises(genzshcomp.InvalidParserTypeError,
+                          hp._get_parserobj, optlist)
+
+    def test_parser_type_is_optparse(self):
+        hp = genzshcomp.HelpParser("Options:")
+        optlist = [{'short': None, 'long': '--text',
+                    'metavar': None, 'help': "help string"}]
+        self.assertEqual(type(hp._get_parserobj(optlist)),
+                         type(OptionParser()))
+
+    def test_optparse_short_and_long(self):
+        hp = genzshcomp.HelpParser("Options:")
+        optlist = [{'short': '-t', 'long': '--text',
+                    'metavar': None, 'help': "help string"}]
+        parser = hp._get_parserobj(optlist)
+        self.assertEqual(type(parser), type(OptionParser()))
+        self.assertEqual(parser.has_option('-t'), True)
+        self.assertEqual(parser.has_option('--text'), True)
+
+    def test_optparse_short(self):
+        hp = genzshcomp.HelpParser("Options:")
+        optlist = [{'short': '-t', 'long': None,
+                    'metavar': None, 'help': "help string"}]
+        parser = hp._get_parserobj(optlist)
+        self.assertEqual(type(parser), type(OptionParser()))
+        self.assertEqual(parser.has_option('-t'), True)
+        self.assertEqual(parser.has_option('--text'), False)
+
+    def test_optparse_long(self):
+        hp = genzshcomp.HelpParser("Options:")
+        optlist = [{'short': None, 'long': '--text',
+                    'metavar': None, 'help': "help string"}]
+        parser = hp._get_parserobj(optlist)
+        self.assertEqual(type(parser), type(OptionParser()))
+        self.assertEqual(parser.has_option('-t'), False)
+        self.assertEqual(parser.has_option('--text'), True)
+
+    def test_parser_type_is_argparse(self):
+        hp = genzshcomp.HelpParser("optional arguments:")
+        optlist = [{'short': None, 'long': '--text',
+                    'metavar': None, 'help': "help string"}]
+        self.assertEqual(type(hp._get_parserobj(optlist)),
+                         type(ArgumentParser()))
+
+    def test_argparse_short_and_long(self):
+        hp = genzshcomp.HelpParser("optional arguments:")
+        optlist = [{'short': '-t', 'long': '--text',
+                    'metavar': None, 'help': "help string"}]
+        parser = hp._get_parserobj(optlist)
+        self.assertEqual(type(parser), type(ArgumentParser()))
+        self.assertNotEqual(len(parser._get_option_tuples('-t')), 0)
+        self.assertNotEqual(len(parser._get_option_tuples('--text')), 0)
+
+    #def test_argparse_short(self):
+    #    """test invalid"""
+    #    hp = genzshcomp.HelpParser("optional arguments:")
+    #    optlist = [{'short': '-t', 'long': None,
+    #                'metavar': None, 'help': "help string"}]
+    #    parser = hp._get_parserobj(optlist)
+    #    self.assertEqual(type(parser), type(ArgumentParser()))
+    #    self.assertNotEqual(len(parser._get_option_tuples('-t')), 0)
+    #    self.assertEqual(len(parser._get_option_tuples('--text')), 0)
+
+    def test_argparse_long(self):
+        hp = genzshcomp.HelpParser("optional arguments:")
+        optlist = [{'short': None, 'long': '--text',
+                    'metavar': None, 'help': "help string"}]
+        parser = hp._get_parserobj(optlist)
+        self.assertEqual(type(parser), type(ArgumentParser()))
+        self.assertNotEqual(len(parser._get_option_tuples('--text')), 0)
+
+
 if __name__ == '__main__':
     main()
