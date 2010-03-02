@@ -95,7 +95,7 @@ class ZshCompletionGenerator(object):
         ret.append("_arguments -s -S \\")
         for action in actions:
             if action.metavar:
-                metavar = ":%s:" % action.metavar
+                metavar = "::%s:_files" % action.metavar
             else:
                 metavar = ""
             if self.parser_type == 'optparse':
