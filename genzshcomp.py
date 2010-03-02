@@ -3,7 +3,7 @@ from optparse import OptionParser
 import re
 import sys
 
-__version__ = '0.0.7dev'
+__version__ = '0.0.7'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
 __license__ = 'NewBSDLicense'
 
