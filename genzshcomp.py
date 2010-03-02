@@ -147,7 +147,7 @@ class HelpParser(object):
         helpstring_offset = self._get_helpoffset()
         option_cnt = -1
         option_list = []
-        ## 1 == 'Options' line
+        ## 1 is 'Options' line
         for line in self.parselines[1:]:
             if '--help' in line:
                 continue
@@ -163,27 +163,34 @@ class HelpParser(object):
                 option_list.append({'short': None,
                                     'long': longopt,
                                     'metavar': metavar,
-                                    'help': line[helpstring_offset:]})
+                                    'help': line[helpstring_offset:] + ' '})
                 option_cnt += 1
             elif tmp[0][0] == '-':
                 ## short option
                 shortopt = tmp[0][:2]
                 longopt = None
+                if line[helpstring_offset - 1] is ' ':
+                    help_string = line[helpstring_offset:]
+                else:
+                    help_string = ""
                 if tmp[1][:2] == '--':
                     longopt = tmp[1]
                     if '=' in longopt:
                         longtmp = longopt.split("=")
                         longopt = longtmp[0]
                         metavar = longtmp[1]
+                else:   # found metavar
+                    metavar = tmp[1][:-1]
+                    longopt = tmp[2].split("=")[0]
                 option_list.append({'short': shortopt,
                                     'long': longopt,
-                                    'metavar': None,
-                                    'help': line[helpstring_offset:]})
+                                    'metavar': metavar,
+                                    'help': help_string + ' '})
                 option_cnt += 1
             else:
                 ## only help-strings line
-                option_list[option_cnt]['help'] += " "
                 option_list[option_cnt]['help'] += line[helpstring_offset:]
+                option_list[option_cnt]['help'] += " "
         if '--version' in self.parselines[0]:
             parser = OptionParser(version="dummy")
         else:
@@ -192,11 +199,11 @@ class HelpParser(object):
             if opt['short']:
                 parser.add_option(opt['short'], opt['long'],
                                   metavar=opt['metavar'],
-                                  help=opt['help'])
+                                  help=opt['help'].strip())
             else:
                 parser.add_option(opt['long'],
                                   metavar=opt['metavar'],
-                                  help=opt['help'])
+                                  help=opt['help'].strip())
         return parser
 
 
