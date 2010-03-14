@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """automatic generated to zsh completion function file"""
 from optparse import OptionParser
 import re
@@ -252,7 +253,25 @@ class HelpParser(object):
 
 def main():
     """tool main"""
-    help_parser = HelpParser(open(sys.argv[1]).read())
+    from select import poll, POLLIN
+    oparser = OptionParser(version=__version__,
+                           description=__doc__,
+                           usage="usage: genzshcomp FILE\n"\
+                                 "             or\n"\
+                                 "       USER_SCRIPT --help | genzshcomp")
+    (opts, args) = oparser.parse_args()
+    if len(args):
+        helptext = open(args[0]).read()
+    else:
+        poller = poll()
+        poller.register(sys.stdin, POLLIN)
+        ret = poller.poll(0.5)
+        if len(ret) == 1 and ret[0][1] & POLLIN:
+            helptext = sys.stdin.read()
+        else:
+            oparser.print_help()
+            return -1
+    help_parser = HelpParser(helptext)
     command_name = help_parser.get_commandname()
     option_parser = help_parser.help2optparse()
     zshop = ZshCompletionGenerator(command_name, option_parser)
