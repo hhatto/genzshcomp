@@ -265,7 +265,7 @@ def main():
     else:
         poller = poll()
         poller.register(sys.stdin, POLLIN)
-        ret = poller.poll(0.5)
+        ret = poller.poll(300)
         if len(ret) == 1 and ret[0][1] & POLLIN:
             helptext = sys.stdin.read()
         else:
