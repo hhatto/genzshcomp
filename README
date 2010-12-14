@@ -50,7 +50,7 @@ and zsh completion setups::
     $ python gen.py > ~/.zsh/comp/_command
     $ echo "fpath=(~/.zsh/comp/ $fpath)" >> ~/.zshrc
     $ echo "autoload -U ~/.zsh/comp/*(:t)" >> ~/.zshrc
-    $ echo "autoload -Uz compinit >> ~/.zshrc
+    $ echo "autoload -Uz compinit" >> ~/.zshrc
 
 from help-strings
 -----------------
@@ -61,4 +61,10 @@ basic usage and zsh completion setups (ex.pep8 command)::
     $ genzshcomp pep8help.txt > ~/.zsh/comp/_pep8
     $ echo "fpath=(~/.zsh/comp/ $fpath)" >> ~/.zshrc
     $ echo "autoload -U ~/.zsh/comp/*(:t)" >> ~/.zshrc
-    $ echo "autoload -Uz compinit >> ~/.zshrc
+    $ echo "autoload -Uz compinit" >> ~/.zshrc
+
+using shell pipe::
+
+    $ pep8 --help | genzshcomp > ~/.zsh/comp/_pep8
+    # As follows...
+
