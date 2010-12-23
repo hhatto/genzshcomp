@@ -260,7 +260,7 @@ def main():
                                  "             or\n"\
                                  "       USER_SCRIPT --help | genzshcomp")
     (opts, args) = oparser.parse_args()
-    if len(args):
+    if sys.stdin.isatty() and len(args):
         helptext = open(args[0]).read()
     else:
         poller = poll()
