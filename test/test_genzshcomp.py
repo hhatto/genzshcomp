@@ -190,7 +190,7 @@ class TestHelpParser(TestCase):
         self.assertNotEqual(len(parser._get_option_tuples('--text')), 0)
 
     def test_double_dash_in_helpstring(self):
-        # error in vertualenv version1.5.1
+        # error when execute vertualenv version1.5.1
         help_string = """\
 Usage: virtualenv [OPTIONS] DEST_DIR
 
@@ -208,6 +208,40 @@ Options:
         """
         hp = genzshcomp.HelpParser(help_string)
         self.assertEqual(True, isinstance(hp.help2optparse(), OptionParser))
+
+    def test_same_of_helpstring_offset_optionstring(self):
+        # error when execute nosetests version0.11.4
+        help_string = """\
+Usage: nosetests [options]
+
+Options:
+  -h, --help            show this help message and exit
+  -V, --version         Output nose version and exit
+  -p, --plugins         Output list of available plugins and exit. Combine
+                        with higher verbosity for greater detail
+  -v, --verbose         Be more verbose. [NOSE_VERBOSE]
+  --verbosity=VERBOSITY
+                        Set verbosity; --verbosity=2 is the same as -v
+  -q, --quiet           Be less verbose
+  -c FILES, --config=FILES
+                        Load configuration from config file(s). May be
+                        specified multiple times; in that case, all config
+                        files will be loaded and combined
+  -w WHERE, --where=WHERE
+                        Look for tests in this directory. May be specified
+                        multiple times. The first directory passed will be
+                        used as the working directory, in place of the current
+                        working directory, which is the default. Others will
+                        be added to the list of tests to execute. [NOSE_WHERE]
+  -m REGEX, --match=REGEX, --testmatch=REGEX
+                        Files, directories, function names, and class names
+                        that match this regular expression are considered
+                        tests.  Default: (?:^|[\b_\./-])[Tt]est
+                        [NOSE_TESTMATCH]
+        """
+        hp = genzshcomp.HelpParser(help_string)
+        oparser = hp.help2optparse()
+        self.assertNotEqual(None, oparser.get_option("-c"))
 
 if __name__ == '__main__':
     main()

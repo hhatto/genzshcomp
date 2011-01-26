@@ -204,9 +204,7 @@ class HelpParser(object):
         option_list = []
         ## 1 is 'Options' line
         for line in self.parselines[1:]:
-            if len(line) < helpstring_offset:
-                break
-            if '--help' in line:
+            if line.isspace() or not len(line) or '--help' in line:
                 continue
             tmp = line.split()
             metavar = None
