@@ -189,6 +189,25 @@ class TestHelpParser(TestCase):
         self.assertEqual(type(parser), type(ArgumentParser()))
         self.assertNotEqual(len(parser._get_option_tuples('--text')), 0)
 
+    def test_double_dash_in_helpstring(self):
+        # error in vertualenv version1.5.1
+        help_string = """\
+Usage: virtualenv [OPTIONS] DEST_DIR
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -v, --verbose         Increase verbosity
+  -q, --quiet           Decrease verbosity
+  -p PYTHON_EXE, --python=PYTHON_EXE
+                        The Python interpreter to use, e.g.,
+                        --python=python2.5 will use the python2.5 interpreter
+                        to create the new environment.  The default is the
+                        interpreter that virtualenv was installed with
+                        (/usr/bin/python2.7)
+        """
+        hp = genzshcomp.HelpParser(help_string)
+        self.assertEqual(True, isinstance(hp.help2optparse(), OptionParser))
 
 if __name__ == '__main__':
     main()

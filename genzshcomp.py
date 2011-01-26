@@ -210,7 +210,7 @@ class HelpParser(object):
                 continue
             tmp = line.split()
             metavar = None
-            if tmp[0][:2] == '--':
+            if line.find('--') < helpstring_offset and tmp[0][:2] == '--':
                 ## only long option
                 longopt = tmp[0]
                 if '=' in longopt:
@@ -222,7 +222,7 @@ class HelpParser(object):
                                     'metavar': metavar,
                                     'help': line[helpstring_offset:] + ' '})
                 option_cnt += 1
-            elif tmp[0][0] == '-':
+            elif line.find('--') < helpstring_offset and tmp[0][0] == '-':
                 ## short option
                 shortopt = tmp[0][:2]
                 longopt = None
