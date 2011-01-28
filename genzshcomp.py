@@ -251,7 +251,7 @@ class HelpParser(object):
 
 def main():
     """tool main"""
-    from select import poll, POLLIN
+    from select import poll, POLLIN, POLLHUP
     oparser = OptionParser(version=__version__,
                            description=__doc__,
                            usage="usage: genzshcomp FILE\n"\
@@ -260,15 +260,20 @@ def main():
     (opts, args) = oparser.parse_args()
     if sys.stdin.isatty() and len(args):
         helptext = open(args[0]).read()
+    elif sys.stdin.isatty() and not len(args):
+        oparser.print_help()
+        return -1
     else:
-        poller = poll()
-        poller.register(sys.stdin, POLLIN)
-        ret = poller.poll(300)
-        if len(ret) == 1 and ret[0][1] & POLLIN:
-            helptext = sys.stdin.read()
-        else:
-            oparser.print_help()
-            return -1
+        helptext = ""
+        while True:
+            poller = poll()
+            poller.register(sys.stdin, POLLIN)
+            ret = poller.poll()
+            if len(ret) == 1 and ret[0][1] & POLLIN:
+                helptext += sys.stdin.read()
+            elif len(ret) == 1 and ret[0][1] & POLLHUP:
+                helptext += sys.stdin.read()
+                break
     help_parser = HelpParser(helptext)
     command_name = help_parser.get_commandname()
     option_parser = help_parser.help2optparse()
