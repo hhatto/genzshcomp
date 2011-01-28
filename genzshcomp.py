@@ -109,9 +109,12 @@ class ZshCompletionGenerator(object):
                 opts = action.option_strings
             for opt in opts:
                 directory_comp = self._get_dircomp(opt)
-                tmp = "  \"%s[%s]%s%s\" \\" % (opt,
-                      _escape_squarebracket(action.help),
-                      metavar, directory_comp)
+                if action.help:
+                    tmp = "  \"%s[%s]%s%s\" \\" % (opt,
+                          _escape_squarebracket(action.help),
+                          metavar, directory_comp)
+                else:
+                    tmp = "  \"%s%s%s\" \\" % (opt, metavar, directory_comp)
                 ret.append(tmp)
         ret.append("  \"*::args:_files\"")
         return "\n".join(ret)
