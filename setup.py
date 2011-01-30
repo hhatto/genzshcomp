@@ -15,7 +15,7 @@ setup(
     author_email='hhatto.jp@gmail.com',
     url='http://bitbucket.org/hhatto/genzshcomp/',
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Environment :: Console',
         'Operating System :: Unix',
@@ -24,7 +24,7 @@ setup(
         'Programming Language :: Unix Shell',
         'Topic :: System :: Shells',
     ],
-    keywords="automation zsh completion",
+    keywords="auto automation zsh completion",
     py_modules=['genzshcomp'],
     zip_safe=False,
     entry_points={'console_scripts': ['genzshcomp = genzshcomp:main']},
