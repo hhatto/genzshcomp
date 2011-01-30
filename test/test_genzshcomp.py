@@ -33,29 +33,32 @@ class TestParserType(TestCase):
 class TestEscape(TestCase):
 
     def test_non_squarebracket(self):
-        self.assertEqual("hoge", genzshcomp._escape_squarebracket("hoge"))
+        self.assertEqual("hoge", genzshcomp._escape_strings("hoge"))
+
+    def test_escape_doublequote(self):
+        self.assertEqual('ho\\"ge', genzshcomp._escape_strings('ho"ge'))
 
     def test_squarebracket_left(self):
-        self.assertEqual("\\[hoge", genzshcomp._escape_squarebracket("[hoge"))
+        self.assertEqual("\\[hoge", genzshcomp._escape_strings("[hoge"))
 
     def test_squarebracket_right(self):
-        self.assertEqual("hoge\\]", genzshcomp._escape_squarebracket("hoge]"))
+        self.assertEqual("hoge\\]", genzshcomp._escape_strings("hoge]"))
 
     def test_squarebracket_leftright(self):
         self.assertEqual("\\[hoge\\]",
-                         genzshcomp._escape_squarebracket("[hoge]"))
+                         genzshcomp._escape_strings("[hoge]"))
 
     def test_squarebracket_rightdouble(self):
         self.assertEqual("hoge\\]\\]",
-                         genzshcomp._escape_squarebracket("hoge]]"))
+                         genzshcomp._escape_strings("hoge]]"))
 
     def test_squarebracket_leftdouble(self):
         self.assertEqual("\\[\\[hoge",
-                         genzshcomp._escape_squarebracket("[[hoge"))
+                         genzshcomp._escape_strings("[[hoge"))
 
     def test_squarebracket_leftrightdouble(self):
         self.assertEqual("\\[\\[hoge\\]\\]",
-                         genzshcomp._escape_squarebracket("[[hoge]]"))
+                         genzshcomp._escape_strings("[[hoge]]"))
 
 
 class TestReturnDirCompString(TestCase):
@@ -242,6 +245,66 @@ Options:
         hp = genzshcomp.HelpParser(help_string)
         oparser = hp.help2optparse()
         self.assertNotEqual(None, oparser.get_option("-c"))
+
+    def test_whitespace_in_optstrings(self):
+        """test example is pylint's help strings"""
+        help_string = """\
+Usage:  pylint [options] module_or_package
+
+  Check that a module satisfy a coding standard (and more !).
+
+    pylint --help
+
+  Display this help message and exit.
+
+    pylint --help-msg <msg-id>[,<msg-id>]
+
+  Display help messages about given message identifiers and exit.
+
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  --long-help           more verbose help.
+
+  Master:
+    --rcfile=<file>     Specify a configuration file.
+    -E, --errors-only   In error mode, checkers without error messages are
+                        disabled and for others, only the ERROR messages are
+                        displayed, and no reports are done by default
+    --ignore=<file>     Add <file or directory> to the black list. It should
+                        be a base name, not a path. You may set this option
+                        multiple times. [current: CVS]
+
+  Commands:
+    --help-msg=<msg-id>
+                        Display a help message for the given message id and
+                        exit. The value may be a comma separated list of
+                        message ids.
+    --generate-rcfile   Generate a sample configuration file according to the
+                        current configuration. You can put other options
+                        before this one to get them in the generated
+                        configuration.
+
+  Miscellaneous:
+    --notes=<comma separated values>
+                        List of note tags to take in consideration, separated
+                        by a comma. [current: FIXME,XXX,TODO]
+
+  Messages control:
+    -e <msg ids>, --enable=<msg ids>
+                        Enable the message, report, category or checker with
+                        the given id(s). You can either give multiple
+                        identifier separated by comma (,) or put this option
+                        multiple time.
+        """
+        hp = genzshcomp.HelpParser(help_string)
+        oparser = hp.help2optparse()
+        self.assertEqual(True, oparser.has_option("-e"))
+        self.assertEqual(True, oparser.has_option("--ignore"))
+        self.assertEqual(True, oparser.has_option("--help-msg"))
+        o = oparser.get_option('--notes')
+        #self.assertEqual('List', o.help[:4])   # FIXME: not parsing
 
 if __name__ == '__main__':
     main()

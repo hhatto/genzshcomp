@@ -28,21 +28,23 @@ def get_parser_type(parser_obj):
     return parser_type
 
 
-def _escape_squarebracket(strings):
-    """escape to only squarebracket.
+def _escape_strings(strings):
+    """escape to squarebracket and doublequote.
 
-    >>> print _escape_squarebracket("hoge")
+    >>> print _escape_strings("hoge")
     hoge
-    >>> print _escape_squarebracket("[hoge")
+    >>> print _escape_strings("[hoge")
     \[hoge
-    >>> print _escape_squarebracket("hoge]")
+    >>> print _escape_strings("hoge]")
     hoge\]
-    >>> print _escape_squarebracket("[hoge]")
+    >>> print _escape_strings("[hoge]")
     \[hoge\]
+    >>> print _escape_strings('[ho"ge]')
+    \[ho\"ge\]
     """
     ret = []
     for string in strings:
-        if string == '[' or string == ']':
+        if string == '[' or string == ']' or string == '"':
             string = '\\' + string
         ret.append(string)
     return "".join(ret)
@@ -109,9 +111,12 @@ class ZshCompletionGenerator(object):
                 opts = action.option_strings
             for opt in opts:
                 directory_comp = self._get_dircomp(opt)
-                tmp = "  \"%s[%s]%s%s\" \\" % (opt,
-                      _escape_squarebracket(action.help),
-                      metavar, directory_comp)
+                if action.help:
+                    tmp = "  \"%s[%s]%s%s\" \\" % (opt,
+                          _escape_strings(action.help),
+                          metavar, directory_comp)
+                else:
+                    tmp = "  \"%s%s%s\" \\" % (opt, metavar, directory_comp)
                 ret.append(tmp)
         ret.append("  \"*::args:_files\"")
         return "\n".join(ret)
@@ -204,30 +209,40 @@ class HelpParser(object):
         option_list = []
         ## 1 is 'Options' line
         for line in self.parselines[1:]:
-            if line.isspace() or not len(line) or '--help' in line:
+            if line.isspace() or not len(line) or '--help     ' in line:
+                ## FIXME: judged to '--help     ' is durty hack...
                 continue
             tmp = line.split()
             metavar = None
             if line.find('--') < helpstring_offset and tmp[0][:2] == '--':
                 ## only long option
                 longopt = tmp[0]
+                longopt_length = 0
                 if '=' in longopt:
                     longtmp = longopt.split("=")
                     longopt = longtmp[0]
                     metavar = longtmp[1]
+                    longopt_length += len(metavar) + 1
+                longopt_length += len(longopt) + line.find('--')
+                ## check to exist help strings
+                if longopt_length > helpstring_offset:
+                    helpstrings = ""
+                else:
+                    helpstrings = line[helpstring_offset:] + ' '
                 option_list.append({'short': None,
                                     'long': longopt,
                                     'metavar': metavar,
-                                    'help': line[helpstring_offset:] + ' '})
+                                    'help': helpstrings})
                 option_cnt += 1
             elif line.find('--') < helpstring_offset and tmp[0][0] == '-':
                 ## short option
-                shortopt = tmp[0][:2]
+                shortopt = line.split(', ')[0].lstrip().split()[0]
                 longopt = None
                 if line[helpstring_offset - 1] is ' ':
                     help_string = line[helpstring_offset:]
                 else:
                     help_string = ""
+                tmp = line.split(', ')
                 if tmp[1][:2] == '--':
                     longopt = tmp[1]
                     if '=' in longopt:
