@@ -11,6 +11,8 @@ __version__ = '0.1'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
 __license__ = 'NewBSDLicense'
 
+__all__ = ["main", "ZshCompletionGenerator", "HelpParser"]
+
 
 class InvalidParserTypeError(Exception):
     """Base Class for invalid parser type exception."""
@@ -54,10 +56,12 @@ class ZshCompletionGenerator(object):
 
     """Generator of Zsh Completion Function"""
 
-    def __init__(self, commandname=None, parser=None):
+    def __init__(self, commandname=None, parser=None, parser_type=None):
         self.commandname = commandname
         self.parser = parser
-        self.parser_type = get_parser_type(parser)
+        if not parser_type:
+            parser_type = get_parser_type(parser)
+        self.parser_type = parser_type
 
     def _get_dircomp(self, opt):
         """judged to directories and files completion.
