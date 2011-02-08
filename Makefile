@@ -12,4 +12,4 @@ clean:
 	rm -rf *.egg-info
 	rm -rf build
 	rm -rf dist
-	rm *.pyc
+	rm -rf *.pyc

@@ -242,7 +242,9 @@ class HelpParser(object):
                 ## short option
                 shortopt = line.split(', ')[0].lstrip().split()[0]
                 longopt = None
-                if line[helpstring_offset - 1] is ' ':
+                if len(line) < helpstring_offset:
+                    help_string = ""
+                elif line[helpstring_offset - 1] is ' ':
                     help_string = line[helpstring_offset:]
                 else:
                     help_string = ""

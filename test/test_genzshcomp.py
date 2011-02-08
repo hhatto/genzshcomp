@@ -306,5 +306,46 @@ Options:
         o = oparser.get_option('--notes')
         #self.assertEqual('List', o.help[:4])   # FIXME: not parsing
 
+    def test_gunicorn_help_ver0_12(self):
+        """test example is gunicorn's(version0.12) help strings"""
+        help_string = """\
+Usage: gunicorn [OPTIONS] APP_MODULE
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -c FILE, --config=FILE
+                        The path to a Gunicorn config file. [None]
+  --debug               Turn on debugging in the server. [False]
+  --spew                Install a trace function that spews every line
+                        executed by the server. [False]
+  --log-file=FILE       The log file to write to. [-]
+  --log-level=LEVEL     The granularity of log outputs. [info]
+  --log-config=FILE     The log config file to use. [None]
+  -n STRING, --name=STRING
+                        A base to use with setproctitle for process naming.
+                        [None]
+  --preload             Load application code before the worker processes are
+                        forked. [False]
+  -D, --daemon          Daemonize the Gunicorn process. [False]
+  -p FILE, --pid=FILE   A filename to use for the PID file. [None]
+  -u USER, --user=USER  Switch worker processes to run as this user. [1000]
+  -g GROUP, --group=GROUP
+                        Switch worker process to run as this group. [1000]
+  -m INT, --umask=INT   A bit mask for the file mode on files written by
+                        Gunicorn. [0]
+  -b ADDRESS, --bind=ADDRESS
+                        The socket to bind. [127.0.0.1:8000]
+  --backlog=INT         The maximum number of pending connections.     [2048]
+  -w INT, --workers=INT
+                        The number of worker process for handling requests.
+                        [1]
+        """
+        hp = genzshcomp.HelpParser(help_string)
+        oparser = hp.help2optparse()
+        self.assertEqual(True, oparser.has_option("-D"))
+        self.assertEqual(True, oparser.has_option("-m"))
+        self.assertEqual(True, oparser.has_option("--workers"))
+
 if __name__ == '__main__':
     main()
