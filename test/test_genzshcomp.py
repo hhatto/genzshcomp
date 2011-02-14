@@ -346,6 +346,8 @@ Options:
         self.assertEqual(True, oparser.has_option("-D"))
         self.assertEqual(True, oparser.has_option("-m"))
         self.assertEqual(True, oparser.has_option("--workers"))
+        self.assertEqual(True, oparser.has_option("-D"))
+        self.assertEqual(True, oparser.has_option("--daemon"))
 
 if __name__ == '__main__':
     main()

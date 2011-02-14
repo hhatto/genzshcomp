@@ -255,6 +255,8 @@ class HelpParser(object):
                         longtmp = longopt.split("=")
                         longopt = longtmp[0]
                         metavar = longtmp[1]
+                    else:
+                        longopt = tmp[1].split()[0]
                 else:   # found metavar
                     metavar = tmp[1][:-1]
                     longopt = tmp[2].split("=")[0]
