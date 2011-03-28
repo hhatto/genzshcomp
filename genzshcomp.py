@@ -248,18 +248,26 @@ class HelpParser(object):
                     help_string = line[helpstring_offset:]
                 else:
                     help_string = ""
-                tmp = line.split(', ')
-                if tmp[1][:2] == '--':
-                    longopt = tmp[1]
-                    if '=' in longopt:
-                        longtmp = longopt.split("=")
-                        longopt = longtmp[0]
-                        metavar = longtmp[1]
-                    else:
-                        longopt = tmp[1].split()[0]
-                else:   # found metavar
-                    metavar = tmp[1][:-1]
-                    longopt = tmp[2].split("=")[0]
+                # check exist longopt
+                if line.find(', --') != -1:     # exist long option
+                    tmp = line.split(', ')
+                    if tmp[1][:2] == '--':
+                        longopt = tmp[1]
+                        if '=' in longopt:
+                            longtmp = longopt.split("=")
+                            longopt = longtmp[0]
+                            metavar = longtmp[1]
+                        else:
+                            longopt = tmp[1].split()[0]
+                    else:   # found metavar
+                        metavar = tmp[1][:-1]
+                        longopt = tmp[2].split("=")[0]
+                else:                           # not exist long option
+                    tmp = line.split()
+                    shortopt = tmp[0]
+                    metavar = tmp[1]
+                    if len(tmp) > 2:
+                        help_string += line[helpstring_offset - 1]
                 option_list.append({'short': shortopt,
                                     'long': longopt,
                                     'metavar': metavar,

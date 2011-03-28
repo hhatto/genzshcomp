@@ -349,5 +349,44 @@ Options:
         self.assertEqual(True, oparser.has_option("-D"))
         self.assertEqual(True, oparser.has_option("--daemon"))
 
+    def test_only_short_option(self):
+        """test example is pytomo."""
+        help_string = """\
+Usage: pytomo [-r max_rounds] [-u max_crawled_url] [-p max_per_url] [-P max_per_page] [-t time_frame] [-n ping_packets] [-D download_time] [-B buffering_video_duration] [-M min_playout_buffer_size] [-L log_level]
+
+Options:
+  -h, --help            show this help message and exit
+  -r MAX_ROUNDS         Max number of rounds to perform (default 50)
+  -u MAX_CRAWLED_URL    Max number of urls to visit (default 10000)
+  -p MAX_PER_URL        Max number of related urls from each page (default 2)
+  -P MAX_PER_PAGE       Max number of related videos from each page (default
+                        30)
+  -t TIME_FRAME         Timeframe for the most popular videos to fetch at
+                        start of crawl put 'today', 'week', 'month' or
+                        'all_time' (default 'week')
+  -n PING_PACKETS       Number of packets to be sent for each ping (default 3)
+  -D DOWNLOAD_TIME      Download time for the video (default 30.000000)
+  -B BUFFERING_VIDEO_DURATION
+                        Buffering video duration (default 3.000000)
+  -M MIN_PLAYOUT_BUFFER_SIZE
+                        Minimum Playout Buffer Size (default 1.000000)
+  -L LOG_LEVEL          The log level setting for the Logging module.Choose
+                        from: 'DEBUG', 'INFO', 'WARNING', 'ERROR' and
+                        'CRITICAL' (default 'DEBUG')
+  --http-proxy=PROXIES  in case of http proxy to reach Internet (default None)
+        """
+        hp = genzshcomp.HelpParser(help_string)
+        oparser = hp.help2optparse()
+        self.assertEqual(True, oparser.has_option("-r"))
+        self.assertEqual(True, oparser.has_option("-u"))
+        self.assertEqual(True, oparser.has_option("-p"))
+        self.assertEqual(True, oparser.has_option("-P"))
+        self.assertEqual(True, oparser.has_option("-n"))
+        self.assertEqual(True, oparser.has_option("-D"))
+        self.assertEqual(True, oparser.has_option("-B"))
+        self.assertEqual(True, oparser.has_option("-M"))
+        self.assertEqual(True, oparser.has_option("-L"))
+        self.assertEqual(True, oparser.has_option("--http-proxy"))
+
 if __name__ == '__main__':
     main()
