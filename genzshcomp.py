@@ -296,15 +296,15 @@ def main():
         return -1
     else:
         helptext = ""
+        poller = poll()
+        poller.register(sys.stdin, POLLIN)
         while True:
-            poller = poll()
-            poller.register(sys.stdin, POLLIN)
             ret = poller.poll()
-            if len(ret) == 1 and ret[0][1] & POLLIN:
-                helptext += sys.stdin.read()
-            elif len(ret) == 1 and ret[0][1] & POLLHUP:
+            if len(ret) == 1 and ret[0][1] & POLLHUP:
                 helptext += sys.stdin.read()
                 break
+            elif len(ret) == 1 and ret[0][1] & POLLIN:
+                helptext += sys.stdin.read()
     help_parser = HelpParser(helptext)
     command_name = help_parser.get_commandname()
     option_parser = help_parser.help2optparse()
