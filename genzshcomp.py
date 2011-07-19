@@ -7,7 +7,7 @@ import sys
 from argparse import ArgumentParser, RawDescriptionHelpFormatter
 
 
-__version__ = '0.2.1'
+__version__ = '0.2.2'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
 __license__ = 'NewBSDLicense'
 
