@@ -187,10 +187,14 @@ class HelpParser(object):
                             formatter_class=RawDescriptionHelpFormatter)
         for opt in option_list:
             if opt['short'] and self.parser_type is 'optparse':
+                if parser.has_option(opt['short']):
+                    parser.remove_option(opt['short'])
                 parser.add_option(opt['short'], opt['long'],
                                   metavar=opt['metavar'],
                                   help=opt['help'].strip())
             elif not opt['short'] and self.parser_type is 'optparse':
+                if parser.has_option(opt['short']):
+                    parser.remove_option(opt['short'])
                 parser.add_option(opt['long'],
                                   metavar=opt['metavar'],
                                   help=opt['help'].strip())
