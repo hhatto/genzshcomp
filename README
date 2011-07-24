@@ -71,6 +71,7 @@ using shell pipe::
 
 Support commands
 ================
+- `grin/grind`_ (*grin --help*)
 - gunicorn_ (*gunicorn --help*)
 - markdown2_ (*markdown2 --help*)
 - paver_ (*paver --help*)
@@ -79,6 +80,7 @@ Support commands
 
 and...
 
+.. _`grin/grind`: http://pypi.python.org/pypi/grin
 .. _gunicorn: http://gunicorn.org/
 .. _markdown2: http://code.google.com/p/python-markdown2/
 .. _paver: http://paver.github.com/paver/
