@@ -68,3 +68,19 @@ using shell pipe::
     $ pep8 --help | genzshcomp > ~/.zsh/comp/_pep8
     # As follows...
 
+
+Support commands
+================
+- gunicorn_ (*gunicorn --help*)
+- markdown2_ (*markdown2 --help*)
+- paver_ (*paver --help*)
+- pep8_ (*pep8 --help*)
+- pylint_ (*pylint --long-help*)
+
+and...
+
+.. _gunicorn: http://gunicorn.org/
+.. _markdown2: http://code.google.com/p/python-markdown2/
+.. _paver: http://paver.github.com/paver/
+.. _pep8: http://pypi.python.org/pypi/pep8
+.. _pylint: http://www.logilab.org/857
