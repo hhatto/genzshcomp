@@ -128,7 +128,7 @@ class ZshCompletionGenerator(object):
 
 class HelpParser(object):
 
-    """converte from help-strins to optparse.OptionParser"""
+    """convert from help-strings to optparse.OptionParser"""
 
     def __init__(self, helpstrings):
         self.helplines = helpstrings.splitlines()
