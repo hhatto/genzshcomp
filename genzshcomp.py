@@ -33,15 +33,15 @@ def get_parser_type(parser_obj):
 def _escape_strings(strings):
     """escape to squarebracket and doublequote.
 
-    >>> print _escape_strings("hoge")
+    >>> print(_escape_strings("hoge"))
     hoge
-    >>> print _escape_strings("[hoge")
+    >>> print(_escape_strings("[hoge"))
     \[hoge
-    >>> print _escape_strings("hoge]")
+    >>> print(_escape_strings("hoge]"))
     hoge\]
-    >>> print _escape_strings("[hoge]")
+    >>> print(_escape_strings("[hoge]"))
     \[hoge\]
-    >>> print _escape_strings('[ho"ge]')
+    >>> print(_escape_strings('[ho"ge]'))
     \[ho\"ge\]
     """
     ret = []
@@ -344,7 +344,7 @@ def main():
     option_parser = help_parser.help2optparse()
     zshop = ZshCompletionGenerator(command_name, option_parser,
                 output_format=opts.output_format)
-    print zshop.get()
+    print(zshop.get())
     return 0
 
 
