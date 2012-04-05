@@ -56,12 +56,14 @@ class ZshCompletionGenerator(object):
 
     """Generator of Zsh Completion Function"""
 
-    def __init__(self, commandname=None, parser=None, parser_type=None):
+    def __init__(self, commandname=None, parser=None, parser_type=None,
+                 output_format=None):
         self.commandname = commandname
         self.parser = parser
         if not parser_type:
             parser_type = get_parser_type(parser)
         self.parser_type = parser_type
+        self.output_format = output_format if output_format else 'zsh'
 
     def _get_dircomp(self, opt):
         """judged to directories and files completion.
@@ -90,8 +92,29 @@ class ZshCompletionGenerator(object):
                     return ""
         return ""
 
-    def get(self):
-        """return to string of zsh completion function."""
+    def _get_list_format(self):
+        """return to string of list format."""
+        if self.parser_type == 'optparse':
+            actions = self.parser.option_list
+        elif self.parser_type == 'argparse':
+            actions = self.parser._actions
+        ret = []
+        for action in actions:
+            if self.parser_type == 'optparse':
+                opts = [i for i in action._long_opts]
+                opts += [i for i in action._short_opts]
+            elif self.parser_type == 'argparse':
+                opts = action.option_strings
+            for opt in opts:
+                if action.help:
+                    tmp = "%s:%s" % (opt, _escape_strings(action.help))
+                else:
+                    tmp = "%s" % (opt)
+                ret.append(tmp)
+        return "\n".join(ret)
+
+    def _get_zsh_format(self):
+        """return to string of zsh completion function format."""
         if self.parser_type == 'optparse':
             actions = self.parser.option_list
         elif self.parser_type == 'argparse':
@@ -124,6 +147,11 @@ class ZshCompletionGenerator(object):
                 ret.append(tmp)
         ret.append("  \"*::args:_files\"")
         return "\n".join(ret)
+
+    def get(self):
+        """_get_XXX_format wrapper method"""
+        func = getattr(self, "_get_%s_format" % self.output_format)
+        return func()
 
 
 class HelpParser(object):
@@ -292,6 +320,8 @@ def main():
                            usage="usage: genzshcomp FILE\n"\
                                  "             or\n"\
                                  "       USER_SCRIPT --help | genzshcomp")
+    oparser.add_option("-f", "--output-format", dest="output_format",
+            help="output format type [zsh|list] (default: zsh)")
     (opts, args) = oparser.parse_args()
     if sys.stdin.isatty() and len(args):
         helptext = open(args[0]).read()
@@ -312,7 +342,8 @@ def main():
     help_parser = HelpParser(helptext)
     command_name = help_parser.get_commandname()
     option_parser = help_parser.help2optparse()
-    zshop = ZshCompletionGenerator(command_name, option_parser)
+    zshop = ZshCompletionGenerator(command_name, option_parser,
+                output_format=opts.output_format)
     print zshop.get()
     return 0
 
