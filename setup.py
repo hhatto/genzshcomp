@@ -9,7 +9,7 @@ setup(
     version=genzshcomp.__version__,
     description="Automatic generated to zsh completion function, "\
                 "for Python's Option Parser Modules.",
-    long_description=open("README").read(),
+    long_description=open("README.rst").read(),
     license='New BSD License',
     author='Hideo Hattori',
     author_email='hhatto.jp@gmail.com',
