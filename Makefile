@@ -9,7 +9,4 @@ pypireg:
 	python setup.py sdist bdist_egg upload
 
 clean:
-	rm -rf *.egg-info
-	rm -rf build
-	rm -rf dist
-	rm -rf *.pyc
+	rm -rf *.egg-info build dist temp *.pyc
