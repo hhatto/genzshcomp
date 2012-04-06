@@ -406,5 +406,29 @@ Options:
         self.assertEqual(True, oparser.has_option("--help"))
         self.assertEqual(True, oparser.has_option("--version"))
 
+
+class TestGenList(TestCase):
+
+    def test_own(self):
+        help_string = """\
+Usage: genzshcomp FILE
+             or
+       USER_SCRIPT --help | genzshcomp
+
+automatic generated to zsh completion function file
+
+Options:
+  --version   show program's version number and exit
+  -h, --help  show this help message and exit
+        """
+        hp = genzshcomp.HelpParser(help_string)
+        oparser = hp.help2optparse()
+        parser = OptionParser()
+        zshop = genzshcomp.ZshCompletionGenerator('dummy', parser,
+                    output_format='list')
+        zshlist = zshop.get()
+        self.assertEqual(True, '--help:show' in zshlist)
+
+
 if __name__ == '__main__':
     main()
