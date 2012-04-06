@@ -4,7 +4,11 @@ from optparse import OptionParser
 import re
 import sys
 
-from argparse import ArgumentParser, RawDescriptionHelpFormatter
+try:
+    import argparse
+    from argparse import ArgumentParser, RawDescriptionHelpFormatter
+except ImportError:
+    argparse = None
 
 
 __version__ = '0.2.2'
@@ -201,18 +205,18 @@ class HelpParser(object):
         :rtype: parser object class
         """
         if '--version' in self.parselines[0]:
-            if 'optparse' == self.parser_type:
-                parser = OptionParser(version="dummy")
-            else:
+            if argparse and 'argparse' == self.parser_type:
                 parser = ArgumentParser(
                             version='dummy',
                             formatter_class=RawDescriptionHelpFormatter)
-        else:
-            if 'optparse' == self.parser_type:
-                parser = OptionParser()
             else:
+                parser = OptionParser(version="dummy")
+        else:
+            if argparse and 'argparse' == self.parser_type:
                 parser = ArgumentParser(
                             formatter_class=RawDescriptionHelpFormatter)
+            else:
+                parser = OptionParser()
         for opt in option_list:
             if opt['short'] and self.parser_type is 'optparse':
                 if parser.has_option(opt['short']):

@@ -1,16 +1,25 @@
 from unittest import TestCase, main
-from argparse import ArgumentParser
+try:
+    import argparse
+except ImportError:
+    argparse = None
 from optparse import OptionParser
 import sys
 import os
-sys.path.insert(0, os.path.abspath('./'))
 import genzshcomp
+
+
+def available_argparse(func):
+    if not argparse:
+        func = None
+    return func
 
 
 class TestParserType(TestCase):
 
+    @available_argparse
     def test_argparse(self):
-        target = ArgumentParser()
+        target = argparse.ArgumentParser()
         ret = genzshcomp.get_parser_type(target)
         self.assertEqual(ret, "argparse")
 
@@ -63,28 +72,33 @@ class TestEscape(TestCase):
 
 class TestReturnDirCompString(TestCase):
 
+    @available_argparse
     def test_argparse_help_short(self):
-        parser = ArgumentParser()
+        parser = argparse.ArgumentParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
         self.assertEqual(':', generator._get_dircomp('-h'))
 
+    @available_argparse
     def test_argparse_help_long(self):
-        parser = ArgumentParser()
+        parser = argparse.ArgumentParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
         self.assertEqual(':', generator._get_dircomp('--help'))
 
+    @available_argparse
     def test_argparse_version_short(self):
-        parser = ArgumentParser()
+        parser = argparse.ArgumentParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
         self.assertEqual(':', generator._get_dircomp('-v'))
 
+    @available_argparse
     def test_argparse_version_long(self):
-        parser = ArgumentParser()
+        parser = argparse.ArgumentParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
         self.assertEqual(':', generator._get_dircomp('--version'))
 
+    @available_argparse
     def test_argparse_dirfiles(self):
-        parser = ArgumentParser()
+        parser = argparse.ArgumentParser()
         generator = genzshcomp.ZshCompletionGenerator('dummy', parser)
         self.assertEqual('', generator._get_dircomp('-c'))
 
@@ -158,38 +172,42 @@ class TestHelpParser(TestCase):
         self.assertEqual(parser.has_option('-t'), False)
         self.assertEqual(parser.has_option('--text'), True)
 
+    @available_argparse
     def test_parser_type_is_argparse(self):
         hp = genzshcomp.HelpParser("optional arguments:")
         optlist = [{'short': None, 'long': '--text',
                     'metavar': None, 'help': "help string"}]
         self.assertEqual(type(hp._get_parserobj(optlist)),
-                         type(ArgumentParser()))
+                         type(argparse.ArgumentParser()))
 
+    @available_argparse
     def test_argparse_short_and_long(self):
         hp = genzshcomp.HelpParser("optional arguments:")
         optlist = [{'short': '-t', 'long': '--text',
                     'metavar': None, 'help': "help string"}]
         parser = hp._get_parserobj(optlist)
-        self.assertEqual(type(parser), type(ArgumentParser()))
+        self.assertEqual(type(parser), type(argparse.ArgumentParser()))
         self.assertNotEqual(len(parser._get_option_tuples('-t')), 0)
         self.assertNotEqual(len(parser._get_option_tuples('--text')), 0)
 
+    #@available_argparse
     #def test_argparse_short(self):
     #    """test invalid"""
     #    hp = genzshcomp.HelpParser("optional arguments:")
     #    optlist = [{'short': '-t', 'long': None,
     #                'metavar': None, 'help': "help string"}]
     #    parser = hp._get_parserobj(optlist)
-    #    self.assertEqual(type(parser), type(ArgumentParser()))
+    #    self.assertEqual(type(parser), type(argparse.ArgumentParser()))
     #    self.assertNotEqual(len(parser._get_option_tuples('-t')), 0)
     #    self.assertEqual(len(parser._get_option_tuples('--text')), 0)
 
+    @available_argparse
     def test_argparse_long(self):
         hp = genzshcomp.HelpParser("optional arguments:")
         optlist = [{'short': None, 'long': '--text',
                     'metavar': None, 'help': "help string"}]
         parser = hp._get_parserobj(optlist)
-        self.assertEqual(type(parser), type(ArgumentParser()))
+        self.assertEqual(type(parser), type(argparse.ArgumentParser()))
         self.assertNotEqual(len(parser._get_option_tuples('--text')), 0)
 
     def test_double_dash_in_helpstring(self):
