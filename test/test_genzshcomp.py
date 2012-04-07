@@ -6,6 +6,8 @@ except ImportError:
 from optparse import OptionParser
 import sys
 import os
+sys.path.insert(0,
+        os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
 import genzshcomp
 
 
