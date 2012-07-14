@@ -46,8 +46,11 @@ class TestEscape(TestCase):
     def test_non_squarebracket(self):
         self.assertEqual("hoge", genzshcomp._escape_strings("hoge"))
 
-    def test_escape_doublequote(self):
+    def test_doublequote(self):
         self.assertEqual('ho\\"ge', genzshcomp._escape_strings('ho"ge'))
+
+    def test_backquote(self):
+        self.assertEqual('ho\\`ge', genzshcomp._escape_strings('ho`ge'))
 
     def test_squarebracket_left(self):
         self.assertEqual("\\[hoge", genzshcomp._escape_strings("[hoge"))
