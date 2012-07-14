@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 """automatic generated to zsh completion function file"""
-from optparse import OptionParser
 import re
 import sys
+from optparse import OptionParser
+from select import poll, POLLIN, POLLHUP
 
 try:
     import argparse
@@ -159,7 +160,7 @@ class ZshCompletionGenerator(object):
         return "\n".join(ret)
 
     def get(self):
-        """_get_XXX_format wrapper method"""
+        """_get_X_format wrapper method"""
         func = getattr(self, "_get_%s_format" % self.output_format)
         return func()
 
@@ -323,7 +324,6 @@ class HelpParser(object):
 
 def main():
     """tool main"""
-    from select import poll, POLLIN, POLLHUP
     oparser = OptionParser(version=__version__,
                            description=__doc__,
                            usage=USAGE_DOCS)
