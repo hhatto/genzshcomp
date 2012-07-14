@@ -17,6 +17,11 @@ __license__ = 'NewBSDLicense'
 
 __all__ = ["main", "ZshCompletionGenerator", "HelpParser"]
 
+USAGE_DOCS = """\
+usage: genzshcomp FILE
+             or
+       USER_SCRIPT --help | genzshcomp"""
+
 
 class InvalidParserTypeError(Exception):
     """Base Class for invalid parser type exception."""
@@ -25,11 +30,11 @@ class InvalidParserTypeError(Exception):
 def get_parser_type(parser_obj):
     """return to 'argparse' or 'optparse'"""
     if not hasattr(parser_obj, '__module__'):
-        raise InvalidParserTypeError("not have attribute to '__module__'." \
+        raise InvalidParserTypeError("not have attribute to '__module__'."
                                      " object-type='%s'" % type(parser_obj))
     parser_type = parser_obj.__module__
     if not parser_type in ('optparse', 'argparse'):
-        raise InvalidParserTypeError("Invalid paresr type." \
+        raise InvalidParserTypeError("Invalid paresr type."
                                      " type='%s'" % type(parser_type))
     return parser_type
 
@@ -48,9 +53,10 @@ def _escape_strings(strings):
     >>> print(_escape_strings('[ho"ge]'))
     \[ho\"ge\]
     """
+    target_chars = "[]\"`"
     ret = []
     for string in strings:
-        if string == '[' or string == ']' or string == '"':
+        if string in target_chars:
             string = '\\' + string
         ret.append(string)
     return "".join(ret)
@@ -206,15 +212,14 @@ class HelpParser(object):
         """
         if '--version' in self.parselines[0]:
             if argparse and 'argparse' == self.parser_type:
-                parser = ArgumentParser(
-                            version='dummy',
+                parser = ArgumentParser(version='dummy',
                             formatter_class=RawDescriptionHelpFormatter)
             else:
                 parser = OptionParser(version="dummy")
         else:
             if argparse and 'argparse' == self.parser_type:
                 parser = ArgumentParser(
-                            formatter_class=RawDescriptionHelpFormatter)
+                    formatter_class=RawDescriptionHelpFormatter)
             else:
                 parser = OptionParser()
         for opt in option_list:
@@ -321,11 +326,9 @@ def main():
     from select import poll, POLLIN, POLLHUP
     oparser = OptionParser(version=__version__,
                            description=__doc__,
-                           usage="usage: genzshcomp FILE\n"\
-                                 "             or\n"\
-                                 "       USER_SCRIPT --help | genzshcomp")
+                           usage=USAGE_DOCS)
     oparser.add_option("-f", "--output-format", dest="output_format",
-            help="output format type [zsh|list] (default: zsh)")
+                       help="output format type [zsh|list] (default: zsh)")
     (opts, args) = oparser.parse_args()
     if sys.stdin.isatty() and len(args):
         helptext = open(args[0]).read()
@@ -347,7 +350,7 @@ def main():
     command_name = help_parser.get_commandname()
     option_parser = help_parser.help2optparse()
     zshop = ZshCompletionGenerator(command_name, option_parser,
-                output_format=opts.output_format)
+                                   output_format=opts.output_format)
     print(zshop.get())
     return 0
 
