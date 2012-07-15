@@ -269,6 +269,7 @@ class HelpParser(object):
         return parser
 
     def help2parseobj(self):
+        """wrapper of help2optparse and help2argparse."""
         if self.parser_type == 'optparse':
             _method = self.help2optparse
         else:
@@ -283,7 +284,6 @@ class HelpParser(object):
         ## 1 is 'Options' line
         for line in self.parselines[1:]:
             if line.isspace() or not len(line) or '--help     ' in line:
-                ## FIXME: judged to '--help     ' is durty hack...
                 continue
             tmp = line.split()
             metavar = None
@@ -356,7 +356,6 @@ class HelpParser(object):
         for line in self.parselines[1:]:
             if line.isspace() or not len(line) or '--help     ' in line or \
                '--version  ' in line:
-                ## FIXME: judged to '--help     ' is durty hack...
                 continue
             tmp = line.split()
             metavar = None
