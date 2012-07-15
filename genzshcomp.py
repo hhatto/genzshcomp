@@ -236,17 +236,44 @@ class HelpParser(object):
                 parser.add_option(opt['long'],
                                   metavar=opt['metavar'],
                                   help=opt['help'].strip())
+            elif opt['long'] and opt['short'] and \
+                 self.parser_type is 'argparse':
+                if opt['metavar'] is None:
+                    parser.add_argument(opt['short'], opt['long'],
+                                        action='store_true',
+                                        help=opt['help'].strip())
+                else:
+                    parser.add_argument(opt['short'], opt['long'],
+                                        metavar=opt['metavar'],
+                                        help=opt['help'].strip())
             elif opt['short'] and self.parser_type is 'argparse':
-                parser.add_argument(opt['short'], opt['long'],
-                                    metavar=opt['metavar'],
-                                    help=opt['help'].strip())
+                if opt['metavar'] is None:
+                    parser.add_argument(opt['short'],
+                                        action='store_true',
+                                        help=opt['help'].strip())
+                else:
+                    parser.add_argument(opt['short'],
+                                        metavar=opt['metavar'],
+                                        help=opt['help'].strip())
             elif not opt['short'] and self.parser_type is 'argparse':
-                parser.add_argument(opt['long'],
-                                    metavar=opt['metavar'],
-                                    help=opt['help'].strip())
+                if opt['metavar'] is None:
+                    parser.add_argument(opt['long'],
+                                        action='store_true',
+                                        help=opt['help'].strip())
+                else:
+                    parser.add_argument(opt['long'],
+                                        metavar=opt['metavar'],
+                                        help=opt['help'].strip())
             else:
                 raise InvalidParserTypeError("Invalid paresr type.")
         return parser
+
+    def help2parseobj(self):
+        if self.parser_type == 'optparse':
+            _method = self.help2optparse
+        else:
+            _method = self.help2argparse
+        return _method()
 
     def help2optparse(self):
         """convert from help strings to optparse.OptionParser object."""
@@ -321,6 +348,79 @@ class HelpParser(object):
                 option_list[option_cnt]['help'] += " "
         return self._get_parserobj(option_list)
 
+    def help2argparse(self):
+        """convert from help strings to argparse.ArgumentParser object."""
+        helpstring_offset = self._get_helpoffset()
+        option_cnt = -1
+        option_list = []
+        for line in self.parselines[1:]:
+            if line.isspace() or not len(line) or '--help     ' in line or \
+               '--version  ' in line:
+                ## FIXME: judged to '--help     ' is durty hack...
+                continue
+            tmp = line.split()
+            metavar = None
+            if line.find('--') < helpstring_offset and \
+                 len(tmp) > 2 and tmp[2][0] == '-':
+                ## (long option and) short option and exist METAVAR
+                optlist = line.split()
+                longopt = optlist[0]
+                shortopt = optlist[2]
+                metavar = optlist[1][:-1]
+                if len(line) < helpstring_offset:
+                    help_string = ""
+                elif line[helpstring_offset - 1] is ' ':
+                    help_string = line[helpstring_offset:]
+                else:
+                    help_string = ""
+                option_list.append({'short': shortopt,
+                                    'long': longopt,
+                                    'metavar': metavar,
+                                    'help': help_string + ' '})
+                option_cnt += 1
+            elif line.find('--') < helpstring_offset and len(tmp) > 1 and \
+                 tmp[1][0] == '-':
+                ## (long option and) short option and not exist metavar
+                optlist = line.split()
+                longopt = optlist[0][:-1]
+                shortopt = optlist[1]
+                if len(line) < helpstring_offset:
+                    help_string = ""
+                elif line[helpstring_offset - 1] is ' ':
+                    help_string = line[helpstring_offset:]
+                else:
+                    help_string = ""
+                option_list.append({'short': shortopt,
+                                    'long': longopt,
+                                    'metavar': None,
+                                    'help': help_string + ' '})
+                option_cnt += 1
+            elif line.find('--') < helpstring_offset and tmp[0][:2] == '--':
+                ## only long option
+                longopt = tmp[0]
+                longopt_offset = len(longopt) + 2
+                metavar = None
+                ## check exist METAVAR
+                if line[longopt_offset] == ' ' and \
+                   re.search('[a-zA-Z[{]', line[longopt_offset + 1]):
+                    metavar = tmp[1]
+                    longopt_offset += len(metavar) + 1
+                ## check to exist help strings
+                if longopt_offset > helpstring_offset:
+                    helpstrings = ""
+                else:
+                    helpstrings = line[helpstring_offset:] + ' '
+                option_list.append({'short': None,
+                                    'long': longopt,
+                                    'metavar': metavar,
+                                    'help': helpstrings})
+                option_cnt += 1
+            else:
+                ## only help-strings line
+                option_list[option_cnt]['help'] += line[helpstring_offset:]
+                option_list[option_cnt]['help'] += " "
+        return self._get_parserobj(option_list)
+
 
 def main():
     """tool main"""
@@ -348,7 +448,7 @@ def main():
                 helptext += sys.stdin.read()
     help_parser = HelpParser(helptext)
     command_name = help_parser.get_commandname()
-    option_parser = help_parser.help2optparse()
+    option_parser = help_parser.help2parseobj()
     zshop = ZshCompletionGenerator(command_name, option_parser,
                                    output_format=opts.output_format)
     print(zshop.get())

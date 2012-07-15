@@ -429,6 +429,64 @@ Options:
         self.assertEqual(True, oparser.has_option("--help"))
         self.assertEqual(True, oparser.has_option("--version"))
 
+    def test_argparse_long_and_short(self):
+        """example of httpie"""
+        help_string = """
+usage: http [-h] [--version] [--json | --form] [--traceback]
+            [--pretty | --ugly]
+            [--print OUTPUT_OPTIONS | --verbose | --headers | --body]
+            [--style STYLE] [--auth AUTH] [--auth-type {basic,digest}]
+            [--verify VERIFY] [--proxy PROXY] [--allow-redirects]
+            [--timeout TIMEOUT]
+            [METHOD] URL [ITEM [ITEM ...]]
+
+HTTPie - cURL for humans. <http://httpie.org>
+
+positional arguments:
+  METHOD                The HTTP method to be used for the request (GET, POST,
+                        PUT, DELETE, PATCH, ...). If this argument is omitted,
+                        then HTTPie will guess the HTTP method. If there is
+                        some data to be sent, then it will be POST, otherwise
+                        GET.
+  URL                   The protocol defaults to http:// if the URL does not
+                        include one.
+  ITEM                  A key-value pair whose type is defined by the
+                        separator used. It can be an HTTP header
+                        (header:value), a data field to be used in the request
+                        body (field_name=value), a raw JSON data field
+                        (field_name:=value), or a file field
+                        (field_name@/path/to/file). You can use a backslash to
+                        escape a colliding separator in the field name.
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --verbose, -v         Print the whole request as well as the response.
+                        Shortcut for --print=HBhb.
+  --headers, -t         Print only the response headers. Shortcut for
+                        --print=h.
+  --body, -b            Print only the response body. Shortcut for --print=b.
+  --auth-type {basic,digest}
+                        The authentication mechanism to be used. Defaults to
+                        "basic".
+  --verify VERIFY       Set to "no" to skip checking the host's SSL
+                        certificate. You can also pass the path to a CA_BUNDLE
+                        file for private certs. You can also set the
+                        REQUESTS_CA_BUNDLE environment variable. Defaults to
+                        "yes".
+"""
+        hp = genzshcomp.HelpParser(help_string)
+        oparser = hp.help2argparse()
+
+        args = oparser.parse_args(["--body"])
+        self.assertEqual(True, "body" in args)
+        args = oparser.parse_args(["-b"])
+        self.assertEqual(True, "body" in args)
+
+        args = oparser.parse_args(["--auth-type", "B"])
+        self.assertEqual(True, "auth_type" in args)
+        args = oparser.parse_args(["--verify", "test"])
+        self.assertEqual(True, "verify" in args)
+
 
 class TestGenList(TestCase):
 
