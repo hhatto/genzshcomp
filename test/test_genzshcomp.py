@@ -429,6 +429,7 @@ Options:
         self.assertEqual(True, oparser.has_option("--help"))
         self.assertEqual(True, oparser.has_option("--version"))
 
+    @available_argparse
     def test_argparse_long_and_short(self):
         """example of httpie"""
         help_string = """
