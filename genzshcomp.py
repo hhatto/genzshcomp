@@ -139,7 +139,12 @@ class ZshCompletionGenerator(object):
         ret.append("_arguments -s -S \\")
         for action in actions:
             if action.metavar:
-                metavar = "::%s:_files" % action.metavar
+                if self.parser_type == 'argparse' and \
+                    action.metavar[0] == '{' and action.metavar[-1] == '}':
+                    metas = action.metavar[1:-1].split(',')
+                    metavar = "::%s:(%s):" % (action.metavar, " ".join(metas))
+                else:
+                    metavar = "::%s:_files" % action.metavar
             else:
                 metavar = ""
             if self.parser_type == 'optparse':
@@ -359,9 +364,14 @@ class HelpParser(object):
                 continue
             tmp = line.split()
             metavar = None
-            if line.find('--') < helpstring_offset and \
+            if (2 <= helpstring_offset or line[2] == '-') and \
                  len(tmp) > 2 and tmp[2][0] == '-':
                 ## (long option and) short option and exist METAVAR
+                if tmp[0][0] != '-':
+                    # invalid
+                    option_list[option_cnt]['help'] += line[helpstring_offset:]
+                    option_list[option_cnt]['help'] += " "
+                    continue
                 optlist = line.split()
                 longopt = optlist[0]
                 shortopt = optlist[2]

@@ -329,6 +329,44 @@ Options:
         o = oparser.get_option('--notes')
         #self.assertEqual('List', o.help[:4])   # FIXME: not parsing
 
+    @available_argparse
+    def test_boom_help_ver0_4(self):
+        help_string = """\
+usage: boom [-h] [--version] [-m {GET,POST,DELETE,PUT,HEAD,OPTIONS}]
+            [--content-type CONTENT_TYPE] [-D DATA] [-c CONCURRENCY] [-a AUTH]
+            [-n REQUESTS | -d DURATION | -H HEADER]
+            [url]
+
+Simple HTTP Load runner.
+
+positional arguments:
+  url                   URL to hit
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --version             Displays version and exits.
+  -m {GET,POST,DELETE,PUT,HEAD,OPTIONS}, --method {GET,POST,DELETE,PUT,HEAD,OPTIONS}
+                        HTTP Method
+  --content-type CONTENT_TYPE
+                        Content-Type
+  -D DATA, --data DATA  Data. Prefixed by "py:" to point a python callable.
+  -c CONCURRENCY, --concurrency CONCURRENCY
+                        Concurrency
+  -a AUTH, --auth AUTH  Basic authentication user:password
+  -n REQUESTS, --requests REQUESTS
+                        Number of requests
+  -d DURATION, --duration DURATION
+                        Duration in seconds
+  -H HEADER, --header HEADER
+                        Custom header. name:value
+        """
+        hp = genzshcomp.HelpParser(help_string)
+        oparser = hp.help2argparse()
+        args = oparser.parse_args(["--method", "GET"])
+        self.assertEqual(True, "method" in args)
+        args = oparser.parse_args(["-m", "PUT"])
+        self.assertEqual(True, "method" in args)
+
     def test_gunicorn_help_ver0_12(self):
         """test example is gunicorn's(version0.12) help strings"""
         help_string = """\
