@@ -68,6 +68,13 @@ using shell pipe::
     $ pep8 --help | genzshcomp > ~/.zsh/comp/_pep8
     # As follows...
 
+Support Bash Completion
+-----------------------
+using shell pipe::
+
+    $ pep8 --help | genzshcomp -f bash > /etc/bash_completion.d/pep8
+    $ bash
+
 
 Support commands
 ================
