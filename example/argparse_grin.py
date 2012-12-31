@@ -1,7 +1,6 @@
 from grin import get_grin_arg_parser
-from genzshcomp import ZshCompletionGenerator
+from genzshcomp import CompletionGenerator
 
 if __name__ == '__main__':
-    generator = ZshCompletionGenerator("grin",
-                                       get_grin_arg_parser())
+    generator = CompletionGenerator("grin", get_grin_arg_parser())
     print generator.get()

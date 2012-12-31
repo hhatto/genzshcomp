@@ -39,10 +39,10 @@ from code of option parser object
 basic usage::
 
     ## gen.py
-    from genzshcomp import ZshCompletionGenerator
+    from genzshcomp import CompletionGenerator
     from optparse import OptionParser
     parser = OptionParser()
-    generator = ZshCompletionGenerator(command_name, parser)
+    generator = CompletionGenerator(command_name, parser)
     print generator.get()
 
 and zsh completion setups::
