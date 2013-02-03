@@ -3,7 +3,6 @@
 import re
 import sys
 from optparse import OptionParser
-from select import poll, POLLIN, POLLHUP
 
 try:
     import argparse
@@ -473,16 +472,7 @@ def main():
         oparser.print_help()
         return -1
     else:
-        helptext = ""
-        poller = poll()
-        poller.register(sys.stdin, POLLIN)
-        while True:
-            ret = poller.poll()
-            if len(ret) == 1 and ret[0][1] & POLLHUP:
-                helptext += sys.stdin.read()
-                break
-            elif len(ret) == 1 and ret[0][1] & POLLIN:
-                helptext += sys.stdin.read()
+        helptext = sys.stdin.read()
     help_parser = HelpParser(helptext)
     command_name = help_parser.get_commandname()
     option_parser = help_parser.help2parseobj()
