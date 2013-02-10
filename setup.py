@@ -7,7 +7,7 @@ import genzshcomp
 setup(
     name='genzshcomp',
     version=genzshcomp.__version__,
-    description="Automatic generated to zsh completion function, "\
+    description="Automatic generated to zsh completion function, "
                 "for Python's Option Parser Modules.",
     long_description=open("README.rst").read(),
     license='New BSD License',
@@ -26,7 +26,7 @@ setup(
         'Programming Language :: Unix Shell',
         'Topic :: System :: Shells',
     ],
-    keywords="auto automation zsh completion",
+    keywords="auto automation bash zsh completion",
     py_modules=['genzshcomp'],
     zip_safe=False,
     entry_points={'console_scripts': ['genzshcomp = genzshcomp:main']},
