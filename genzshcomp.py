@@ -172,8 +172,11 @@ class CompletionGenerator(object):
                     metavar = "::%s:(%s):" % (action.metavar, " ".join(metas))
                 else:
                     metavar = "::%s:_files" % action.metavar
+            elif action.choices and self.parser_type == 'argparse':
+                metavar = ":::(%s):" % (" ".join(action.choices))
             else:
                 metavar = ""
+
             if self.parser_type == 'optparse':
                 opts = [i for i in action._long_opts]
                 opts += [i for i in action._short_opts]
