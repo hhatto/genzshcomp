@@ -1,5 +1,8 @@
 About
 =====
+.. image:: https://drone.io/bitbucket.org/hhatto/genzshcomp/status.png
+    :target: https://drone.io/bitbucket.org/hhatto/genzshcomp
+
 Automatic generate to Zsh Completion Function from
 Python's Option Parser Modules.
 
