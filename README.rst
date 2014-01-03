@@ -17,8 +17,8 @@ Zsh Completion Function.
 .. _`optparse`: http://docs.python.org/library/optparse.html
 
 
-Install
-=======
+Installation
+============
 used to pip::
 
     $ pip install genzshcomp
@@ -28,8 +28,8 @@ used to easy_install::
     $ easy_install genzshcomp
 
 
-Require
-=======
+Requirements
+============
 * Python2.6+
 
 
@@ -89,7 +89,7 @@ Support commands
 - pep8_ (*pep8 --help*)
 - pylint_ (*pylint --long-help*)
 
-and...
+and more...
 
 .. _`grin/grind`: http://pypi.python.org/pypi/grin
 .. _gunicorn: http://gunicorn.org/
