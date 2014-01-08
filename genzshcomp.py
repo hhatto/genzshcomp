@@ -406,9 +406,7 @@ class HelpParser(object):
                 longopt = optlist[0]
                 shortopt = optlist[2]
                 metavar = optlist[1][:-1]
-                if len(line) < helpstring_offset:
-                    help_string = ""
-                elif line[helpstring_offset - 1] is ' ':
+                if len(line) >= helpstring_offset and line[helpstring_offset - 1] is ' ':
                     help_string = line[helpstring_offset:]
                 else:
                     help_string = ""
@@ -423,16 +421,12 @@ class HelpParser(object):
                 optlist = line.split()
                 longopt = optlist[0][:-1]
                 shortopt = optlist[1]
-                if len(line) < helpstring_offset:
-                    help_string = ""
-                elif line[helpstring_offset - 1] is ' ':
+                if len(line) >= helpstring_offset and line[helpstring_offset - 1] is ' ':
                     help_string = line[helpstring_offset:]
                 else:
                     help_string = ""
-                option_list.append({'short': shortopt,
-                                    'long': longopt,
-                                    'metavar': None,
-                                    'help': help_string + ' '})
+                option_list.append({'short': shortopt, 'long': longopt,
+                                    'metavar': None, 'help': help_string + ' '})
                 option_cnt += 1
             elif line.find('--') < helpstring_offset and tmp[0][:2] == '--':
                 ## only long option
