@@ -434,7 +434,10 @@ class HelpParser(object):
                 longopt_offset = len(longopt) + 2
                 metavar = None
                 ## check exist METAVAR
-                if line[longopt_offset] == ' ' and \
+                if longopt_offset == len(line):
+                    # only option value
+                    pass
+                elif line[longopt_offset] == ' ' and \
                    re.search('[a-zA-Z[{]', line[longopt_offset + 1]):
                     metavar = tmp[1]
                     longopt_offset += len(metavar) + 1

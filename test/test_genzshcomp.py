@@ -410,6 +410,63 @@ Options:
         self.assertEqual(True, oparser.has_option("-D"))
         self.assertEqual(True, oparser.has_option("--daemon"))
 
+    @available_argparse
+    def test_gunicorn_help_ver19_1_1(self):
+        """test example is gunicorn's(version19.1.1) help strings"""
+        help_string = """\
+usage: gunicorn [OPTIONS] [APP_MODULE]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  --proxy-protocol      Enable detect PROXY protocol (PROXY mode). [False]
+  --worker-connections INT
+                        The maximum number of simultaneous clients. [1000]
+  --log-syslog          Send *Gunicorn* logs to syslog. [False]
+  --statsd-host STATSD_ADDR
+                        host:port of the statsd server to log to [None]
+  --pythonpath STRING   A directory to add to the Python path. [None]
+  -R, --enable-stdio-inheritance
+                        Enable stdio inheritance [False]
+  -k STRING, --worker-class STRING
+                        The type of workers to use. [sync]
+  --ssl-version SSL_VERSION
+                        SSL version to use (see stdlib ssl module's) [3]
+  --suppress-ragged-eofs
+                        Suppress ragged EOFs (see stdlib ssl module's) [True]
+  --log-syslog-facility SYSLOG_FACILITY
+                        Syslog facility name [user]
+  --cert-reqs CERT_REQS
+                        Whether client certificate is required (see stdlib ssl
+                        module's) [0]
+  --preload             Load application code before the worker processes are
+                        forked. [False]
+  -w INT, --workers INT
+                        The number of worker process for handling requests.
+                        [1]
+  --keep-alive INT      The number of seconds to wait for requests on a Keep-
+                        Alive connection. [2]
+  --access-logfile FILE
+                        The Access log file to write to. [None]
+  -p FILE, --pid FILE   A filename to use for the PID file. [None]
+  --worker-tmp-dir DIR  A directory to use for the worker heartbeat temporary
+                        file. [None]
+  -g GROUP, --group GROUP
+                        Switch worker process to run as this group. [20]
+  --graceful-timeout INT
+                        Timeout for graceful workers restart. [30]
+  --spew                Install a trace function that spews every line
+                        executed by the server. [False]
+        """
+        hp = genzshcomp.HelpParser(help_string)
+        oparser = hp.help2argparse()
+        args = oparser.parse_args(["--ssl-version", "1.1"])
+        self.assertEqual(True, "ssl_version" in args)
+        args = oparser.parse_args(["--suppress-ragged-eofs"])
+        self.assertEqual(True, "suppress_ragged_eofs" in args)
+        args = oparser.parse_args(["--graceful-timeout", "1"])
+        self.assertEqual(True, "graceful_timeout" in args)
+
     def test_only_short_option(self):
         """test example is pytomo."""
         help_string = """\
