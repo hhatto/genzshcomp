@@ -11,7 +11,7 @@ except ImportError:
     argparse = None
 
 
-__version__ = '0.5.1'
+__version__ = '0.5.2'
 __author__ = 'Hideo Hattroi <hhatto.jp@gmail.com>'
 __license__ = 'NewBSDLicense'
 
