@@ -1,8 +1,11 @@
 
-all: tests
+all: tests commandtest
 
 tests:
 	python test/test_genzshcomp.py
+
+commandtest:
+	sh test/check_readme_commands.sh
 
 pypireg:
 	python setup.py register
