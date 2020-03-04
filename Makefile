@@ -3,6 +3,7 @@ all: tests commandtest
 
 tests:
 	python test/test_genzshcomp.py
+	python -m doctest genzshcomp.py
 
 commandtest:
 	sh test/check_readme_commands.sh

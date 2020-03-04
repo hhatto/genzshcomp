@@ -46,13 +46,13 @@ def _escape_strings(strings):
     >>> print(_escape_strings("hoge"))
     hoge
     >>> print(_escape_strings("[hoge"))
-    \[hoge
+    \\[hoge
     >>> print(_escape_strings("hoge]"))
-    hoge\]
+    hoge\\]
     >>> print(_escape_strings("[hoge]"))
-    \[hoge\]
+    \\[hoge\\]
     >>> print(_escape_strings('[ho"ge]'))
-    \[ho\"ge\]
+    \\[ho\\"ge\\]
     """
     target_chars = '[]"`'
     ret = []
