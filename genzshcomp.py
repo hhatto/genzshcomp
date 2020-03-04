@@ -337,7 +337,7 @@ class HelpParser(object):
                 else:
                     helpstrings = line[helpstring_offset:] + " "
                 option_list.append(
-                    {"short": None, "long": longopt, "metavar": metavar, "help": helpstrings,}
+                    {"short": None, "long": longopt, "metavar": metavar, "help": helpstrings}
                 )
                 option_cnt += 1
             elif line.find("--") < helpstring_offset and tmp[0][0] == "-":
@@ -457,7 +457,7 @@ class HelpParser(object):
                 else:
                     helpstrings = line[helpstring_offset:] + " "
                 option_list.append(
-                    {"short": None, "long": longopt, "metavar": metavar, "help": helpstrings,}
+                    {"short": None, "long": longopt, "metavar": metavar, "help": helpstrings}
                 )
                 option_cnt += 1
             else:
