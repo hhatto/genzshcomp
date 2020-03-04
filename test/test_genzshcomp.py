@@ -563,6 +563,24 @@ optional arguments:
         args = oparser.parse_args(["--verify", "test"])
         self.assertEqual(True, "verify" in args)
 
+    @available_argparse
+    def test_with_only_two_spaces_between_help_option_and_help_text(self):
+        """see https://bitbucket.org/hhatto/genzshcomp/issues/5/help-option-sometimes-not-properly-parsed
+        """
+        help_string = """\
+usage: check_multiple_instances_of_same_mention.py [-h] filename
+
+positional arguments:
+  filename    file name. Formats supported described in library
+              AnnotatedUtterance (e.g., FAS, weighted FAS, are supported)
+
+optional arguments:
+  -h, --help  show this help message and exit
+        """
+        hp = genzshcomp.HelpParser(help_string)
+        oparser = hp.help2argparse()
+        self.assertEqual(True, isinstance(oparser, argparse.ArgumentParser))
+
 
 class TestGenList(TestCase):
     def test_own(self):
