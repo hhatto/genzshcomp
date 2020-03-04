@@ -1,5 +1,6 @@
-About
-=====
+==========
+genzshcomp
+==========
 
 .. image:: https://drone.io/bitbucket.org/hhatto/genzshcomp/status.png
     :target: https://drone.io/bitbucket.org/hhatto/genzshcomp
@@ -30,7 +31,7 @@ used to easy_install::
 
 Requirements
 ============
-* Python2.6+
+* Python3.5+
 
 
 Usage
