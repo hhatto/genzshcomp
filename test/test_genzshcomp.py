@@ -9,7 +9,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.split(os.path.abspath(os.path.dirname(__file__)))[0])
-import genzshcomp
+import genzshcomp  # NOQA
 
 
 def available_argparse(func):
@@ -472,7 +472,7 @@ Options:
                         from: 'DEBUG', 'INFO', 'WARNING', 'ERROR' and
                         'CRITICAL' (default 'DEBUG')
   --http-proxy=PROXIES  in case of http proxy to reach Internet (default None)
-        """
+        """  # NOQA
         hp = genzshcomp.HelpParser(help_string)
         oparser = hp.help2optparse()
         self.assertEqual(True, oparser.has_option("-r"))
@@ -578,7 +578,7 @@ Options:
   -h, --help  show this help message and exit
         """
         hp = genzshcomp.HelpParser(help_string)
-        oparser = hp.help2optparse()
+        hp.help2optparse()
         parser = OptionParser()
         zshop = genzshcomp.CompletionGenerator("dummy", parser, output_format="list")
         zshlist = zshop.get()
