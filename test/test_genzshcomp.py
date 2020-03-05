@@ -581,6 +581,20 @@ optional arguments:
         oparser = hp.help2argparse()
         self.assertEqual(True, isinstance(oparser, argparse.ArgumentParser))
 
+        help_string = """\
+usage: check_multiple_instances_of_same_mention.py [-h] filename
+
+positional arguments:
+  filename    file name. Formats supported described in library
+              AnnotatedUtterance (e.g., FAS, weighted FAS, are supported)
+
+optional arguments:
+  -v, --version show version info
+        """
+        hp = genzshcomp.HelpParser(help_string)
+        oparser = hp.help2argparse()
+        self.assertEqual(True, isinstance(oparser, argparse.ArgumentParser))
+
 
 class TestGenList(TestCase):
     def test_own(self):

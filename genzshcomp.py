@@ -317,7 +317,7 @@ class HelpParser(object):
         option_list = []
         # 1 is 'Options' line
         for line in self.parselines[1:]:
-            if line.isspace() or not len(line) or "--help " in line:
+            if line.isspace() or not len(line) or "--help  " in line:
                 continue
             tmp = line.split()
             metavar = None
@@ -391,7 +391,7 @@ class HelpParser(object):
         option_cnt = -1
         option_list = []
         for line in self.parselines[1:]:
-            if line.isspace() or not len(line) or "--help " in line or "--version  " in line:
+            if line.isspace() or not len(line) or "--help  " in line or "--version  " in line:
                 continue
             tmp = line.split()
             metavar = None
