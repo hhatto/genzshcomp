@@ -242,7 +242,7 @@ Options:
   -m REGEX, --match=REGEX, --testmatch=REGEX
                         Files, directories, function names, and class names
                         that match this regular expression are considered
-                        tests.  Default: (?:^|[\b_\./-])[Tt]est
+                        tests.  Default: (?:^|[\b_\\./-])[Tt]est
                         [NOSE_TESTMATCH]
         """
         hp = genzshcomp.HelpParser(help_string)
@@ -306,7 +306,7 @@ Options:
         self.assertEqual(True, oparser.has_option("-e"))
         self.assertEqual(True, oparser.has_option("--ignore"))
         self.assertEqual(True, oparser.has_option("--help-msg"))
-        o = oparser.get_option("--notes")
+        # o = oparser.get_option("--notes")
         # self.assertEqual('List', o.help[:4])   # FIXME: not parsing
 
     @available_argparse
