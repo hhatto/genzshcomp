@@ -2,8 +2,13 @@
 genzshcomp
 ==========
 
-.. image:: https://drone.io/bitbucket.org/hhatto/genzshcomp/status.png
-    :target: https://drone.io/bitbucket.org/hhatto/genzshcomp
+.. image:: https://img.shields.io/pypi/v/genzshcomp.svg
+    :target: https://pypi.org/project/genzshcomp/
+    :alt: PyPI Version
+
+.. image:: https://github.com/hhatto/genzshcomp/workflows/Python%20package/badge.svg
+    :target: https://github.com/hhatto/genzshcomp/actions
+    :alt: Github Actions Result
 
 Automatic generate to Zsh Completion Function from
 Python's Option Parser Modules.
